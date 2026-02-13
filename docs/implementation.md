@@ -4,7 +4,7 @@ This document details every script planned for the `no-magic` repository: what e
 
 ### Relationship to Karpathy's Work
 
-This project is inspired by Andrej Karpathy's [micrograd](https://github.com/karpathy/micrograd), [makemore](https://github.com/karpathy/makemore), and `microgpt.py`. We reference and attribute his work but do not replicate it. Specifically: `03-microgpt.py` is included with full attribution; `04-micrornn.py` covers the RNN → GRU progression that makemore explores across notebooks, condensed into a single comparative file; and the autograd engine (micrograd) is already embedded within `03-microgpt.py`. For deeper dives into those specific topics, readers are directed to Karpathy's original repositories.
+This project is inspired by Andrej Karpathy's [micrograd](https://github.com/karpathy/micrograd), [makemore](https://github.com/karpathy/makemore), and `microgpt.py`. We reference and attribute his work but do not replicate it. Specifically: `microgpt.py` is included with full attribution; `micrornn.py` covers the RNN → GRU progression that makemore explores across notebooks, condensed into a single comparative file; and the autograd engine (micrograd) is already embedded within `microgpt.py`. For deeper dives into those specific topics, readers are directed to Karpathy's original repositories.
 
 ---
 
@@ -19,13 +19,13 @@ no-magic/
 │   └── autograd-interface.md   # Canonical Value class interface
 ├── 01-foundations/
 │   ├── README.md               # Algorithm list + roadmap
-│   ├── 03-microgpt.py
-│   ├── 04-micrornn.py
-│   ├── 01-microtokenizer.py
-│   ├── 02-microembedding.py
-│   ├── 05-microrag.py
-│   ├── 06-microdiffusion.py
-│   └── 07-microvae.py
+│   ├── microgpt.py
+│   ├── micrornn.py
+│   ├── microtokenizer.py
+│   ├── microembedding.py
+│   ├── microrag.py
+│   ├── microdiffusion.py
+│   └── microvae.py
 ├── 02-alignment/
 │   ├── README.md               # Algorithm list + roadmap
 │   ├── microlora.py
@@ -89,7 +89,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ## 01 — Foundations
 
-### `03-microgpt.py` — Autoregressive Language Model
+### `microgpt.py` — Autoregressive Language Model
 
 > _"The most atomic way to train and inference a GPT in pure, dependency-free Python."_
 
@@ -118,7 +118,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ---
 
-### `04-micrornn.py` — Recurrent Sequence Modeling
+### `micrornn.py` — Recurrent Sequence Modeling
 
 > _"Before attention conquered everything — how sequences were modeled with recurrence, and why gating was the breakthrough."_
 
@@ -151,7 +151,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 5. Inference: generate names from both models side by side
 ```
 
-**Dataset:** `names.txt` — same task as `03-microgpt.py` for direct comparison across architectures.
+**Dataset:** `names.txt` — same task as `microgpt.py` for direct comparison across architectures.
 
 **Key implementation details:**
 
@@ -178,7 +178,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ---
 
-### `01-microtokenizer.py` — Byte-Pair Encoding
+### `microtokenizer.py` — Byte-Pair Encoding
 
 > _"How text becomes numbers — the compression algorithm hiding inside every LLM."_
 
@@ -220,7 +220,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ---
 
-### `02-microembedding.py` — Contrastive Embedding Learning
+### `microembedding.py` — Contrastive Embedding Learning
 
 > _"How meaning becomes geometry — training vectors where distance equals similarity."_
 
@@ -267,7 +267,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ---
 
-### `05-microrag.py` — Retrieval-Augmented Generation
+### `microrag.py` — Retrieval-Augmented Generation
 
 > _"How retrieval augments generation — the simplest system that actually works."_
 
@@ -317,7 +317,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ---
 
-### `06-microdiffusion.py` — Denoising Diffusion
+### `microdiffusion.py` — Denoising Diffusion
 
 > _"How images emerge from noise — the algorithm behind Stable Diffusion, in 2D."_
 
@@ -362,7 +362,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ---
 
-### `07-microvae.py` — Variational Autoencoder
+### `microvae.py` — Variational Autoencoder
 
 > _"How to learn a compressed, generative representation of data — the reparameterization trick demystified."_
 
@@ -859,10 +859,10 @@ Scripts should be built in this order to manage dependencies and validate the sh
 
 | Phase       | Scripts                                           | Rationale                                                                                                                                                                                  |
 | ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Phase 1** | `01-microtokenizer.py`, `02-microembedding.py`          | No autograd dependency, standalone algorithms                                                                                                                                              |
-| **Phase 2** | `03-microgpt.py`, `04-micrornn.py`, `microattention.py` | Establishes the canonical autograd `Value` class pattern. microgpt is the reference implementation; micrornn extends it with `sigmoid`. microattention is forward-pass only (no autograd). |
-| **Phase 3** | `05-microrag.py`, `microlora.py`                     | microrag uses a character-level MLP (lighter autograd dependency). microlora builds directly on microgpt's training pattern.                                                               |
-| **Phase 4** | `06-microdiffusion.py`, `07-microvae.py`                | Independent algorithms, different model families. Can be parallelized with Phase 3.                                                                                                        |
+| **Phase 1** | `microtokenizer.py`, `microembedding.py`          | No autograd dependency, standalone algorithms                                                                                                                                              |
+| **Phase 2** | `microgpt.py`, `micrornn.py`, `microattention.py` | Establishes the canonical autograd `Value` class pattern. microgpt is the reference implementation; micrornn extends it with `sigmoid`. microattention is forward-pass only (no autograd). |
+| **Phase 3** | `microrag.py`, `microlora.py`                     | microrag uses a character-level MLP (lighter autograd dependency). microlora builds directly on microgpt's training pattern.                                                               |
+| **Phase 4** | `microdiffusion.py`, `microvae.py`                | Independent algorithms, different model families. Can be parallelized with Phase 3.                                                                                                        |
 | **Phase 5** | `microdpo.py`, `microppo.py`                      | Requires stable autograd pattern from Phase 2. microppo uses hybrid autograd (policy: Value class, reward/value: plain floats).                                                            |
 | **Phase 6** | `microquant.py`, `microkv.py`, `microflash.py`    | Systems scripts, can be built independently of Phases 3-5                                                                                                                                  |
 | **Phase 7** | `microbeam.py`, `micromoe.py`                     | microbeam trains two models inline (depends on Phase 2 patterns). micromoe uses hybrid autograd (router: Value class, experts: plain floats).                                              |

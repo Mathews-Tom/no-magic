@@ -62,7 +62,7 @@ git clone https://github.com/your-username/no-magic.git
 cd no-magic
 
 # Pick any script and run it
-python 01-foundations/03-microgpt.py
+python 01-foundations/microgpt.py
 ```
 
 That's it. No virtual environments, no dependency installation, no configuration. Each script will download any small datasets it needs on first run.
@@ -78,10 +78,10 @@ That's it. No virtual environments, no dependency installation, no configuration
 If you're working through the scripts systematically, this order builds concepts incrementally:
 
 ```plaintext
-01-microtokenizer.py     → How text becomes numbers
-02-microembedding.py     → How meaning becomes geometry
-03-microgpt.py        → How sequences become predictions
-05-microrag.py           → How retrieval augments generation
+microtokenizer.py     → How text becomes numbers
+microembedding.py     → How meaning becomes geometry
+microgpt.py        → How sequences become predictions
+microrag.py           → How retrieval augments generation
 microattention.py     → How attention actually works (all variants)
 microlora.py          → How fine-tuning works efficiently
 microdpo.py           → How preference alignment works

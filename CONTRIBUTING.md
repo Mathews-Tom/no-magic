@@ -181,7 +181,7 @@ Target roughly 30-40% of lines as comments or blank lines. This is not a hard me
 - Use type hints in function signatures where they aid readability, but don't over-annotate obvious types.
 - Prefer `f-strings` for formatted output.
 - Use `random.seed(42)` at the top, before any randomness.
-- Avoid global mutable state where possible. If globals are necessary (as in `03-microgpt.py`'s `state_dict`), comment why.
+- Avoid global mutable state where possible. If globals are necessary (as in `microgpt.py`'s `state_dict`), comment why.
 - No classes unless the algorithm fundamentally requires them (e.g., `Value` for autograd). Prefer functions and plain data structures.
 
 ---

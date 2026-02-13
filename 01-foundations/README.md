@@ -6,13 +6,13 @@ Core algorithms that form the building blocks of modern AI systems. These are th
 
 | Script              | Algorithm                                                | Status    |
 | ------------------- | -------------------------------------------------------- | --------- |
-| `03-microgpt.py`       | Autoregressive language model (GPT) with scalar autograd | Complete  |
-| `04-micrornn.py`       | Vanilla RNN vs. GRU — vanishing gradients and gating     | Complete  |
-| `01-microtokenizer.py` | Byte-Pair Encoding (BPE) tokenization                    | Complete  |
-| `02-microembedding.py` | Contrastive embedding learning (InfoNCE)                 | Complete  |
-| `05-microrag.py`       | Retrieval-Augmented Generation (BM25 + MLP)              | Complete  |
-| `06-microdiffusion.py` | Denoising diffusion on 2D point clouds                   | Complete  |
-| `07-microvae.py`       | Variational Autoencoder with reparameterization trick    | Complete  |
+| `microgpt.py`       | Autoregressive language model (GPT) with scalar autograd | Complete  |
+| `micrornn.py`       | Vanilla RNN vs. GRU — vanishing gradients and gating     | Complete  |
+| `microtokenizer.py` | Byte-Pair Encoding (BPE) tokenization                    | Complete  |
+| `microembedding.py` | Contrastive embedding learning (InfoNCE)                 | Complete  |
+| `microrag.py`       | Retrieval-Augmented Generation (BM25 + MLP)              | Complete  |
+| `microdiffusion.py` | Denoising diffusion on 2D point clouds                   | Complete  |
+| `microvae.py`       | Variational Autoencoder with reparameterization trick    | Complete  |
 
 ## Future Candidates
 
@@ -20,7 +20,7 @@ These algorithms are strong candidates for future addition. Each would need to m
 
 | Algorithm                            | What It Would Teach                                 | Notes                                                                     |
 | ------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------- |
-| **LSTM**                             | Long Short-Term Memory gating (3 gates vs. GRU's 2) | Could extend 04-micrornn.py or be standalone                                 |
+| **LSTM**                             | Long Short-Term Memory gating (3 gates vs. GRU's 2) | Could extend micrornn.py or be standalone                                 |
 | **GAN**                              | Generative Adversarial Networks on 2D data          | Generator vs. discriminator dynamics, mode collapse, training instability |
 | **Transformer Encoder (BERT-style)** | Masked language modeling, bidirectional attention   | Contrasts with microgpt (decoder-only)                                    |
 | **ConvNet**                          | Convolution from scratch on tiny images             | Kernel sliding, pooling, feature maps — the vision primitive              |
@@ -32,11 +32,11 @@ These algorithms are strong candidates for future addition. Each would need to m
 For a guided walkthrough of the foundations tier, follow this order:
 
 ```plaintext
-01-microtokenizer.py   → How text becomes numbers
-02-microembedding.py   → How meaning becomes geometry
-03-microgpt.py         → How sequences become predictions
-05-microrag.py         → How retrieval augments generation
-04-micrornn.py         → How sequences were modeled before attention
-06-microdiffusion.py   → How data emerges from noise
-07-microvae.py         → How to learn compressed generative representations
+microtokenizer.py   → How text becomes numbers
+microembedding.py   → How meaning becomes geometry
+microgpt.py         → How sequences become predictions
+microrag.py         → How retrieval augments generation
+micrornn.py         → How sequences were modeled before attention
+microdiffusion.py   → How data emerges from noise
+microvae.py         → How to learn compressed generative representations
 ```
