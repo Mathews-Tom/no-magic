@@ -206,7 +206,7 @@ Target roughly 30-40% of lines as comments or blank lines. This is not a hard me
 
 Your pull request must include:
 
-- **The script file** placed in the correct tier directory (`foundational/`, `alignment/`, or `systems/`).
+- **The script file** placed in the correct tier directory (`01-foundations/`, `02-alignment/`, or `03-systems/`).
 - **A PR description** that includes:
   - The algorithm name and a one-sentence summary.
   - The dataset used and how it's fetched.
@@ -299,7 +299,7 @@ Before submitting, verify every item:
 - [ ] No unnecessary complexity or cleverness
 
 **Logistics**
-- [ ] File placed in correct tier directory (`foundational/`, `alignment/`, or `systems/`)
+- [ ] File placed in correct tier directory (`01-foundations/`, `02-alignment/`, or `03-systems/`)
 - [ ] PR description includes runtime, line count, and sample output
 - [ ] No extra files included
 - [ ] Attribution comments for any referenced papers or implementations

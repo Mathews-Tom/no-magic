@@ -32,7 +32,7 @@ See `docs/autograd-interface.md` for the canonical interface and `docs/implement
 
 ## Learning Path
 
-These scripts build on the foundational tier. Recommended order:
+These scripts build on the foundations tier. Recommended order:
 
 ```
 microlora.py   → How fine-tuning works efficiently (1% of parameters)

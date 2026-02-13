@@ -1,4 +1,4 @@
-# Foundational
+# Foundations
 
 Core algorithms that form the building blocks of modern AI systems. These are the primitives — if you understand these, everything else is composition.
 
@@ -29,7 +29,7 @@ These algorithms are strong candidates for future addition. Each would need to m
 
 ## Learning Path
 
-For a guided walkthrough of the foundational tier, follow this order:
+For a guided walkthrough of the foundations tier, follow this order:
 
 ```
 microtokenizer.py   → How text becomes numbers

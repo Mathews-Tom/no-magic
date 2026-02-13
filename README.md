@@ -36,23 +36,23 @@ This is not a beginner's introduction to programming. You should be comfortable 
 
 The repository is organized into three tiers based on conceptual dependency:
 
-### Foundational
+### 01 — Foundations
 
 Core algorithms that form the building blocks of modern AI systems. These are the primitives — if you understand these, everything else is composition.
 
-See [`foundational/README.md`](foundational/README.md) for the full algorithm list and roadmap.
+See [`01-foundations/README.md`](01-foundations/README.md) for the full algorithm list and roadmap.
 
-### Alignment & Training Techniques
+### 02 — Alignment & Training Techniques
 
 Methods for steering, fine-tuning, and aligning models after pretraining. These are the techniques that turn a base model into something useful.
 
-See [`alignment/README.md`](alignment/README.md) for the full algorithm list and roadmap.
+See [`02-alignment/README.md`](02-alignment/README.md) for the full algorithm list and roadmap.
 
-### Systems & Inference
+### 03 — Systems & Inference
 
 The engineering that makes models fast, small, and deployable. These scripts demystify the optimizations that turn research prototypes into production systems.
 
-See [`systems/README.md`](systems/README.md) for the full algorithm list and roadmap.
+See [`03-systems/README.md`](03-systems/README.md) for the full algorithm list and roadmap.
 
 ## How to Use This Repo
 
@@ -62,7 +62,7 @@ git clone https://github.com/your-username/no-magic.git
 cd no-magic
 
 # Pick any script and run it
-python foundational/microgpt.py
+python 01-foundations/microgpt.py
 ```
 
 That's it. No virtual environments, no dependency installation, no configuration. Each script will download any small datasets it needs on first run.

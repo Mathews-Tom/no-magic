@@ -17,7 +17,7 @@ no-magic/
 ├── docs/
 │   ├── implementation.md       # This file — engineering spec
 │   └── autograd-interface.md   # Canonical Value class interface
-├── foundational/
+├── 01-foundations/
 │   ├── README.md               # Algorithm list + roadmap
 │   ├── microgpt.py
 │   ├── micrornn.py
@@ -26,13 +26,13 @@ no-magic/
 │   ├── microrag.py
 │   ├── microdiffusion.py
 │   └── microvae.py
-├── alignment/
+├── 02-alignment/
 │   ├── README.md               # Algorithm list + roadmap
 │   ├── microlora.py
 │   ├── microdpo.py
 │   ├── microppo.py
 │   └── micromoe.py
-└── systems/
+└── 03-systems/
     ├── README.md               # Algorithm list + roadmap
     ├── microattention.py
     ├── microkv.py
@@ -87,7 +87,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ---
 
-## Tier 1: Foundational
+## 01 — Foundations
 
 ### `microgpt.py` — Autoregressive Language Model
 
@@ -387,7 +387,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ---
 
-## Tier 2: Alignment & Training Techniques
+## 02 — Alignment & Training Techniques
 
 ### `microlora.py` — Low-Rank Adaptation
 
@@ -587,7 +587,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ---
 
-## Tier 3: Systems & Inference
+## 03 — Systems & Inference
 
 ### `microattention.py` — Attention Variants Compendium
 
