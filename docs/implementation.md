@@ -10,7 +10,7 @@ This project is inspired by Andrej Karpathy's [micrograd](https://github.com/kar
 
 ## Repository Structure
 
-```
+```plaintext
 no-magic/
 ├── README.md
 ├── CONTRIBUTING.md
@@ -43,17 +43,17 @@ no-magic/
 
 ## Design Constraints (Enforced Across All Scripts)
 
-| Constraint | Rule |
-|---|---|
-| File count | Exactly one `.py` file per algorithm |
-| Dependencies | Python standard library only (`os`, `math`, `random`, `json`, `struct`, `urllib`, `collections`, `itertools`, `functools`, `string`, `hashlib`, `time`) |
-| Execution | `python script.py` with no arguments runs the full train + inference loop |
-| Runtime | Under **7 minutes on M-series Mac** or under **10 minutes on 2019-era Intel i5**. Target 7 min to leave headroom for slower hardware. |
-| Dataset | Auto-downloaded on first run via `urllib`, cached locally, under 5MB |
-| Output | Prints training progress and inference results to stdout |
-| Seed | `random.seed(42)` for reproducibility |
-| Comments | **Mandatory.** Every script must follow the commenting standard in `CONTRIBUTING.md`. Scripts will not be merged without adequate commentary. |
-| Autograd | Scripts using scalar autograd must implement the canonical `Value` class interface defined in `docs/autograd-interface.md` |
+| Constraint          | Rule                                                                                                                                                                                     |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File count          | Exactly one `.py` file per algorithm                                                                                                                                                     |
+| Dependencies        | Python standard library only (`os`, `math`, `random`, `json`, `struct`, `urllib`, `collections`, `itertools`, `functools`, `string`, `hashlib`, `time`)                                  |
+| Execution           | `python script.py` with no arguments runs the full train + inference loop                                                                                                                |
+| Runtime             | Under **7 minutes on M-series Mac** or under **10 minutes on 2019-era Intel i5**. Target 7 min to leave headroom for slower hardware.                                                    |
+| Dataset             | Auto-downloaded on first run via `urllib`, cached locally, under 5MB                                                                                                                     |
+| Output              | Prints training progress and inference results to stdout                                                                                                                                 |
+| Seed                | `random.seed(42)` for reproducibility                                                                                                                                                    |
+| Comments            | **Mandatory.** Every script must follow the commenting standard in `CONTRIBUTING.md`. Scripts will not be merged without adequate commentary.                                            |
+| Autograd            | Scripts using scalar autograd must implement the canonical `Value` class interface defined in `docs/autograd-interface.md`                                                               |
 | Numerical stability | All scripts must use stable softmax (`exp(x - max(x))`), clipped log-probabilities (`max(p, 1e-10)`), and Adam epsilon (`1e-8`). See `docs/autograd-interface.md` for required patterns. |
 
 ### Minimum Hardware Requirements
@@ -68,7 +68,7 @@ Scripts are tested on M-series Mac (primary) and Intel i5 (secondary). If a scri
 
 See `CONTRIBUTING.md` for the full commenting standard (7 required comment types, density targets, examples). This is the single authoritative reference for comment quality.
 
-**Summary:** File thesis, section headers, "why" comments, math-to-code mappings, intuition comments, signpost comments, no obvious comments. Target 30-40% comment density. The test: *could a motivated engineer read this file top-to-bottom in one sitting and understand the algorithm?*
+**Summary:** File thesis, section headers, "why" comments, math-to-code mappings, intuition comments, signpost comments, no obvious comments. Target 30-40% comment density. The test: _could a motivated engineer read this file top-to-bottom in one sitting and understand the algorithm?_
 
 ### Autograd Callout Pattern
 
@@ -91,11 +91,12 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microgpt.py` — Autoregressive Language Model
 
-> *"The most atomic way to train and inference a GPT in pure, dependency-free Python."*
+> _"The most atomic way to train and inference a GPT in pure, dependency-free Python."_
 
 **Status:** To be implemented. Inspired by Karpathy's microgpt.py but written from scratch for this project's commenting standard and pedagogical goals. Full attribution in file header.
 
 **What it teaches:**
+
 - Scalar autograd via reverse-mode automatic differentiation
 - Token and positional embeddings
 - Multi-head self-attention with causal masking (via incremental KV construction)
@@ -110,6 +111,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Hyperparameters:** `n_embd=16, n_head=4, n_layer=1, block_size=16, lr=0.01, ~4,200 params`
 
 **Success criteria:**
+
 - Final loss: < 2.5 (character-level cross-entropy)
 - Generated names: ≥50% pronounceable English-like sequences
 - Runtime: < 7 minutes on M-series Mac
@@ -118,9 +120,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `micrornn.py` — Recurrent Sequence Modeling
 
-> *"Before attention conquered everything — how sequences were modeled with recurrence, and why gating was the breakthrough."*
+> _"Before attention conquered everything — how sequences were modeled with recurrence, and why gating was the breakthrough."_
 
 **What it teaches:**
+
 - The vanilla RNN: hidden state as a lossy compression of sequence history
 - Backpropagation through time (BPTT): unrolling the recurrence for gradient computation
 - The vanishing gradient problem: why vanilla RNNs fail on long sequences (demonstrated numerically, not just stated)
@@ -151,6 +154,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** `names.txt` — same task as `microgpt.py` for direct comparison across architectures.
 
 **Key implementation details:**
+
 - Both models train on identical data with identical hyperparameters — the only variable is the architecture
 - Gradient norm tracking is the core pedagogical tool: print `||dL/dh_t||` at each timestep for a sample sequence to make vanishing gradients visible, not just theoretical
 - Sigmoid implemented in the autograd: `sigmoid(x) = 1 / (1 + exp(-x))`
@@ -163,6 +167,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Hyperparameters:** `n_hidden=32, seq_len=16, lr=0.01, steps=500 per model, ~800 params (RNN), ~800 params (GRU)`
 
 **Success criteria:**
+
 - Vanilla RNN gradient norm ratio (last/first timestep): < 0.01 (demonstrates vanishing)
 - GRU gradient norm ratio: 0.1–10.0 (demonstrates stability)
 - GRU final loss < vanilla RNN final loss
@@ -175,9 +180,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microtokenizer.py` — Byte-Pair Encoding
 
-> *"How text becomes numbers — the compression algorithm hiding inside every LLM."*
+> _"How text becomes numbers — the compression algorithm hiding inside every LLM."_
 
 **What it teaches:**
+
 - Why tokenization matters (vocabulary efficiency, subword representation)
 - The BPE merge algorithm: iterative pair frequency counting and merging
 - Encoding: greedy left-to-right application of learned merges
@@ -198,12 +204,14 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** Same `names.txt` or a small text corpus (e.g., first 100KB of a public domain book fetched via `urllib`)
 
 **Key implementation details:**
+
 - Maintain a merge priority table (ordered list of merges)
 - Encoding applies merges in priority order, not frequency order on new text
 - Handle UTF-8 properly: base vocabulary is bytes (0-255), not characters
 - Show compression ratio before/after tokenization
 
 **Success criteria:**
+
 - Round-trip correctness: `decode(encode(text)) == text` for all test inputs
 - Compression ratio: ≥1.5x reduction in token count vs. byte-level encoding
 - Runtime: < 2 minutes on M-series Mac
@@ -214,9 +222,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microembedding.py` — Contrastive Embedding Learning
 
-> *"How meaning becomes geometry — training vectors where distance equals similarity."*
+> _"How meaning becomes geometry — training vectors where distance equals similarity."_
 
 **What it teaches:**
+
 - Why learned embeddings outperform bag-of-words and TF-IDF for semantic tasks
 - Contrastive learning with InfoNCE / NT-Xent loss
 - Positive and negative pair construction
@@ -240,6 +249,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** `names.txt` — embed names into a space where similar-sounding names cluster together
 
 **Key implementation details:**
+
 - Character n-gram features as input representation (no learned tokenizer dependency)
 - Simple linear encoder (matrix multiply + normalize), no deep network needed
 - Augmentation via random character deletion/swap to create positive pairs
@@ -247,6 +257,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 - Demonstrate nearest-neighbor retrieval at inference time
 
 **Success criteria:**
+
 - Nearest neighbors have low edit distance (e.g., "Anna" → "Anne", not "Anna" → "Zachary")
 - Cosine similarity between positive pairs > 0.8 after training
 - Cosine similarity between random pairs < 0.3 after training
@@ -258,9 +269,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microrag.py` — Retrieval-Augmented Generation
 
-> *"How retrieval augments generation — the simplest system that actually works."*
+> _"How retrieval augments generation — the simplest system that actually works."_
 
 **What it teaches:**
+
 - The RAG architecture: retrieve-then-generate
 - TF-IDF or BM25 scoring for document retrieval
 - How retrieved context is injected into a generative model's input
@@ -287,6 +299,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** 100 synthetic factual paragraphs (cities, countries, basic facts). Generated programmatically within the script — no download needed. Simple enough to verify retrieval quality by inspection.
 
 **Key implementation details:**
+
 - BM25 implemented from scratch: term frequency saturation, document length normalization, IDF weighting
 - The language model is a **character-level MLP** with concatenated input (`embed(query) + embed(retrieved_context)`). A bigram model cannot condition on retrieved context and would fail to demonstrate RAG's core mechanism.
 - Demonstrate: same query with and without retrieval, showing improved accuracy
@@ -295,6 +308,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Design decision:** The MLP accepts concatenated query + retrieved context as input, enabling the model to actually use retrieved information. This is the minimum architecture that meaningfully demonstrates RAG. The focus is on the retrieval mechanism and context injection, not on the generative model's sophistication.
 
 **Success criteria:**
+
 - Retrieval: BM25 returns relevant documents for ≥80% of test queries
 - Generation with retrieval produces measurably better outputs than without retrieval
 - Runtime: < 6 minutes on M-series Mac
@@ -305,9 +319,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microdiffusion.py` — Denoising Diffusion
 
-> *"How images emerge from noise — the algorithm behind Stable Diffusion, in 2D."*
+> _"How images emerge from noise — the algorithm behind Stable Diffusion, in 2D."_
 
 **What it teaches:**
+
 - The forward process: progressively adding Gaussian noise to data
 - The reverse process: learning to predict and remove noise
 - Noise schedule (linear beta schedule)
@@ -327,6 +342,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** Synthetic — 2D point clouds (spiral, concentric circles, Swiss roll). Generated programmatically, no download needed.
 
 **Key implementation details:**
+
 - 2D data keeps the model tiny (MLP with ~1000 params) while preserving all algorithmic structure
 - Linear noise schedule: `beta_t` linearly interpolated from `beta_1` to `beta_T`
 - Precompute `alpha_bar_t` for efficient noising at arbitrary timesteps
@@ -337,6 +353,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **2D-to-image mapping:** The algorithm is identical to image diffusion (Stable Diffusion, DALL-E). 2D coordinates map to pixel values, the 1000-param MLP maps to a billion-param U-Net, and Gaussian noise on (x,y) maps to Gaussian noise on RGB. The core insight — learn to predict noise, then iteratively denoise — is the same at any dimensionality. Comments must make this mapping explicit.
 
 **Success criteria:**
+
 - Generated point cloud statistics (mean, variance) match training distribution within 20%
 - Visual inspection: generated spiral/Swiss roll is recognizable as the target shape
 - Runtime: < 5 minutes on M-series Mac
@@ -347,9 +364,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microvae.py` — Variational Autoencoder
 
-> *"How to learn a compressed, generative representation of data — the reparameterization trick demystified."*
+> _"How to learn a compressed, generative representation of data — the reparameterization trick demystified."_
 
 **What it teaches:**
+
 - Encoder-decoder architecture for unsupervised learning
 - The reparameterization trick: backpropagating through sampling
 - ELBO loss: reconstruction loss + KL divergence regularization
@@ -371,12 +389,14 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** Synthetic 2D distributions or the same names dataset (character-level VAE).
 
 **Key implementation details:**
+
 - The reparameterization trick must be explicit — this is the entire pedagogical point
 - KL divergence for Gaussian has a closed-form solution: `0.5 * sum(1 + log_var - mean^2 - exp(log_var))`
 - Demonstrate latent space interpolation between two data points
 - Beta-VAE weighting to show the reconstruction/regularization tradeoff
 
 **Success criteria:**
+
 - Reconstruction loss decreases over training (ELBO improves)
 - KL divergence is positive and bounded (not collapsed to 0 or exploded)
 - Latent interpolation produces smooth transitions between data points
@@ -391,9 +411,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microlora.py` — Low-Rank Adaptation
 
-> *"How to fine-tune a model by updating 1% of its parameters — the math behind efficient adaptation."*
+> _"How to fine-tune a model by updating 1% of its parameters — the math behind efficient adaptation."_
 
 **What it teaches:**
+
 - Why full fine-tuning is expensive (all parameters, all gradients, all optimizer states)
 - Low-rank decomposition: `W_new = W_frozen + A @ B` where A and B are small
 - Why low rank works (weight updates during fine-tuning are empirically low-rank)
@@ -415,6 +436,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** Two splits of `names.txt` — e.g., names starting A-M as base, N-Z as adaptation target. Or: English names as base, a different name list as adaptation.
 
 **Key implementation details:**
+
 - Base model trains first (reusing the microgpt loop)
 - Adapter matrices initialized: A ~ N(0, σ), B = 0 (so initial adaptation is zero)
 - Explicit gradient freezing: base `Value` nodes have their `.grad` reset to 0 after backward
@@ -422,6 +444,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 - Show generation quality on both the base and adapted distributions
 
 **Success criteria:**
+
 - Base model converges on dataset A (loss < 2.5)
 - LoRA-adapted model improves on dataset B without catastrophic forgetting on A
 - Trainable parameter count with LoRA < 10% of full model parameters
@@ -433,9 +456,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microdpo.py` — Direct Preference Optimization
 
-> *"How to align a model with human preferences without training a separate reward model."*
+> _"How to align a model with human preferences without training a separate reward model."_
 
 **What it teaches:**
+
 - The preference learning problem: given (prompt, chosen, rejected), make the model prefer "chosen"
 - Why DPO simplifies RLHF: the optimal policy has a closed-form relationship to the reward
 - The DPO loss function: a contrastive objective over log-probability ratios
@@ -456,6 +480,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** Synthetic preference pairs derived from `names.txt` — e.g., prefer names with certain phonetic properties, or prefer longer names over shorter ones. The preference signal should be simple enough to verify visually.
 
 **Key implementation details:**
+
 - Reference model is a frozen copy of the base model's parameters
 - Log-probability computation requires full sequence scoring (sum of per-token log-probs)
 - The sigmoid and log-ratio math must be numerically stable
@@ -463,6 +488,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 - Show: KL divergence between policy and reference increases with training
 
 **Success criteria:**
+
 - DPO loss decreases over training
 - Policy model generates preferred completions more frequently than rejected ones
 - KL divergence between policy and reference increases with training (controlled by beta)
@@ -474,9 +500,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microppo.py` — Proximal Policy Optimization for RLHF
 
-> *"The full RLHF loop: reward model, policy gradient, KL penalty — all in one file."*
+> _"The full RLHF loop: reward model, policy gradient, KL penalty — all in one file."_
 
 **What it teaches:**
+
 - The RLHF pipeline: pretrain → reward model → policy optimization
 - Reward model training from preference pairs
 - Policy gradient with a clipped surrogate objective (PPO)
@@ -504,6 +531,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** Same synthetic preference setup as `microdpo.py` for comparability.
 
 **Key implementation details:**
+
 - **Hybrid autograd approach:** The policy model uses scalar autograd (`Value` class) because PPO gradients must flow through the policy. The reward model and value function use plain float arrays with manual gradient computation — they are trained separately before the PPO loop, so autograd overhead is unnecessary. This preserves the full RLHF algorithm while meeting runtime constraints.
 - Policy: scalar autograd, ~1,000 params (`n_embd=8, n_head=2, n_layer=1`)
 - Reward model: plain float MLP, ~500 params, trained with pairwise ranking loss
@@ -524,6 +552,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 ```
 
 **Success criteria:**
+
 - Reward model accuracy: > 70% on held-out preference pairs
 - Policy generation shifts toward preferred completions over training
 - PPO loss decreases; KL divergence increases (controlled by penalty coefficient)
@@ -535,9 +564,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `micromoe.py` — Mixture of Experts
 
-> *"How to scale model capacity without scaling compute — sparse routing in action."*
+> _"How to scale model capacity without scaling compute — sparse routing in action."_
 
 **What it teaches:**
+
 - The MoE concept: multiple expert networks, only some activated per input
 - Router/gating network: how tokens get assigned to experts
 - Top-k expert selection and soft combining of expert outputs
@@ -561,6 +591,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 **Dataset:** `names.txt` or a slightly larger text corpus to give experts enough signal to specialize.
 
 **Key implementation details:**
+
 - **Hybrid autograd approach:** The router uses scalar autograd (`Value` class) because routing decisions are the core MoE mechanism — gradients must flow through the gating function. Expert MLPs use plain float arrays with manual gradient computation for runtime tractability.
 - 4 experts, top-2 routing (preserves meaningful load balancing dynamics)
 - Router is a simple linear layer with softmax (autograd `Value` objects)
@@ -578,6 +609,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 ```
 
 **Success criteria:**
+
 - All 4 experts receive >10% of token assignments (no expert collapse)
 - Load balancing loss decreases over training
 - Different experts show measurable specialization on different input patterns
@@ -591,9 +623,10 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 ### `microattention.py` — Attention Variants Compendium
 
-> *"Every attention mechanism that matters, implemented side by side in one file."*
+> _"Every attention mechanism that matters, implemented side by side in one file."_
 
 **What it teaches:**
+
 - Vanilla scaled dot-product attention
 - Multi-head attention (parallel heads, concatenate, project)
 - Grouped-query attention (GQA): shared KV heads across query heads
@@ -615,12 +648,14 @@ For each attention variant:
 **Dataset:** No training. Uses random input tensors (lists of lists of `Value` or plain floats) to demonstrate the mechanics.
 
 **Key implementation details:**
+
 - This is primarily a **forward-pass comparison**, not a training script (exception to the train+infer rule, justified because the focus is architectural comparison)
 - Each variant is a self-contained function
 - Print a comparison table at the end: variant, FLOPs, memory, output similarity
 - GQA and MQA are implemented as modifications of the MHA base, making the differences explicit
 
 **Success criteria:**
+
 - All variants produce valid attention outputs (no NaN, no overflow)
 - MQA and GQA outputs are close to MHA (cosine similarity > 0.95)
 - Printed comparison table shows correct FLOP/memory tradeoffs
@@ -632,9 +667,10 @@ For each attention variant:
 
 ### `microkv.py` — KV-Cache Mechanics
 
-> *"Why LLM inference is memory-bound — and exactly how the KV cache works."*
+> _"Why LLM inference is memory-bound — and exactly how the KV cache works."_
 
 **What it teaches:**
+
 - Why naively running attention at each generation step is O(n²) redundant
 - The KV cache: store and reuse key/value projections from previous positions
 - Memory growth: how cache size scales with sequence length, layers, and heads
@@ -654,12 +690,14 @@ For each attention variant:
 **Dataset:** Uses a pretrained tiny model (train inline or hardcode small weights) for generation.
 
 **Key implementation details:**
+
 - Side-by-side implementations make the redundancy obvious
 - Count and print multiply operations at each generation step
 - Show memory growth curve: cache size as a function of sequence position
 - Paged attention section is conceptual/simulated — demonstrate the allocation strategy without a full memory manager
 
 **Success criteria:**
+
 - With-cache and without-cache produce identical outputs
 - Operation count: without-cache grows as O(n²), with-cache grows as O(n)
 - Memory growth curve is printed and shows linear scaling
@@ -671,9 +709,10 @@ For each attention variant:
 
 ### `microquant.py` — Weight Quantization
 
-> *"How to shrink a model by 4x with minimal quality loss — the math behind INT8 and INT4."*
+> _"How to shrink a model by 4x with minimal quality loss — the math behind INT8 and INT4."_
 
 **What it teaches:**
+
 - Why quantization works: neural network weights are approximately normally distributed
 - Absmax quantization: scale to fit the integer range
 - Zero-point quantization: asymmetric ranges
@@ -697,6 +736,7 @@ For each attention variant:
 **Dataset:** `names.txt` — train the base model, then quantize and compare.
 
 **Key implementation details:**
+
 - Represent quantized weights as Python integers, not floats — this is the point
 - Show the actual memory savings: `float32 (4 bytes) → int8 (1 byte) → int4 (0.5 bytes)`
 - Compute and print perplexity/loss for each quantization level
@@ -704,6 +744,7 @@ For each attention variant:
 - Round-trip test: quantize → dequantize → compare to original
 
 **Success criteria:**
+
 - INT8 quantized model loss within 10% of float32 baseline
 - INT4 quantized model loss within 25% of float32 baseline
 - Per-channel quantization outperforms per-tensor quantization
@@ -716,9 +757,10 @@ For each attention variant:
 
 ### `microflash.py` — Flash Attention (Algorithmic Simulation)
 
-> *"Why Flash Attention is fast — the tiling and online softmax trick, simulated in pure Python."*
+> _"Why Flash Attention is fast — the tiling and online softmax trick, simulated in pure Python."_
 
 **What it teaches:**
+
 - Standard attention's memory bottleneck: materializing the full N×N attention matrix
 - Tiled computation: process attention in blocks that fit in "fast memory"
 - Online softmax: compute softmax incrementally without storing all scores
@@ -744,13 +786,15 @@ For each attention variant:
 **Dataset:** No training. Random matrices of configurable size to demonstrate the mechanics.
 
 **Key implementation details:**
-- **This is an algorithmic simulation, not a performance optimization.** Pure Python will be slower than standard attention. The point is to show *what* Flash Attention does, not to be fast.
+
+- **This is an algorithmic simulation, not a performance optimization.** Pure Python will be slower than standard attention. The point is to show _what_ Flash Attention does, not to be fast.
 - Online softmax is the key insight: maintain running `max` and `sum` across blocks
 - Track and print simulated memory usage: standard (O(N²)) vs. flash (O(N))
 - Configurable block size B to show how tiling granularity affects memory
 - Numerical verification: assert outputs match within 1e-6
 
 **Success criteria:**
+
 - Flash attention output matches standard attention within 1e-6 tolerance
 - Simulated peak memory: standard O(N²) vs. flash O(N) clearly shown
 - Runtime: < 2 minutes on M-series Mac
@@ -761,9 +805,10 @@ For each attention variant:
 
 ### `microbeam.py` — Decoding Strategies
 
-> *"Beyond greedy: beam search, top-k, top-p, and speculative decoding in one file."*
+> _"Beyond greedy: beam search, top-k, top-p, and speculative decoding in one file."_
 
 **What it teaches:**
+
 - Greedy decoding: take the argmax at each step (and why it's suboptimal)
 - Temperature sampling: controlling randomness
 - Top-k sampling: truncate to k most likely tokens
@@ -789,12 +834,14 @@ For each attention variant:
 **Dataset:** `names.txt` — generate names using different strategies from the same trained model.
 
 **Key implementation details:**
+
 - All strategies operate on the same underlying model, making comparison fair
 - Beam search requires maintaining B independent KV caches (or re-computing)
 - Speculative decoding uses two model sizes (different `n_embd` / `n_layer` configs)
 - Print a comparison table: strategy, output, log-prob, tokens/step
 
 **Success criteria:**
+
 - All decoding strategies produce valid token sequences
 - Beam search produces higher log-probability sequences than greedy
 - Top-p and top-k produce more diverse outputs than greedy (measured by unique name count)
@@ -810,15 +857,15 @@ For each attention variant:
 
 Scripts should be built in this order to manage dependencies and validate the shared autograd/model patterns. The canonical autograd interface (`docs/autograd-interface.md`) must be finalized before Phase 2 begins.
 
-| Phase | Scripts | Rationale |
-|---|---|---|
-| **Phase 1** | `microtokenizer.py`, `microembedding.py` | No autograd dependency, standalone algorithms |
+| Phase       | Scripts                                           | Rationale                                                                                                                                                                                  |
+| ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Phase 1** | `microtokenizer.py`, `microembedding.py`          | No autograd dependency, standalone algorithms                                                                                                                                              |
 | **Phase 2** | `microgpt.py`, `micrornn.py`, `microattention.py` | Establishes the canonical autograd `Value` class pattern. microgpt is the reference implementation; micrornn extends it with `sigmoid`. microattention is forward-pass only (no autograd). |
-| **Phase 3** | `microrag.py`, `microlora.py` | microrag uses a character-level MLP (lighter autograd dependency). microlora builds directly on microgpt's training pattern. |
-| **Phase 4** | `microdiffusion.py`, `microvae.py` | Independent algorithms, different model families. Can be parallelized with Phase 3. |
-| **Phase 5** | `microdpo.py`, `microppo.py` | Requires stable autograd pattern from Phase 2. microppo uses hybrid autograd (policy: Value class, reward/value: plain floats). |
-| **Phase 6** | `microquant.py`, `microkv.py`, `microflash.py` | Systems scripts, can be built independently of Phases 3-5 |
-| **Phase 7** | `microbeam.py`, `micromoe.py` | microbeam trains two models inline (depends on Phase 2 patterns). micromoe uses hybrid autograd (router: Value class, experts: plain floats). |
+| **Phase 3** | `microrag.py`, `microlora.py`                     | microrag uses a character-level MLP (lighter autograd dependency). microlora builds directly on microgpt's training pattern.                                                               |
+| **Phase 4** | `microdiffusion.py`, `microvae.py`                | Independent algorithms, different model families. Can be parallelized with Phase 3.                                                                                                        |
+| **Phase 5** | `microdpo.py`, `microppo.py`                      | Requires stable autograd pattern from Phase 2. microppo uses hybrid autograd (policy: Value class, reward/value: plain floats).                                                            |
+| **Phase 6** | `microquant.py`, `microkv.py`, `microflash.py`    | Systems scripts, can be built independently of Phases 3-5                                                                                                                                  |
+| **Phase 7** | `microbeam.py`, `micromoe.py`                     | microbeam trains two models inline (depends on Phase 2 patterns). micromoe uses hybrid autograd (router: Value class, experts: plain floats).                                              |
 
 ### Dependency Notes
 
@@ -833,4 +880,4 @@ See `CONTRIBUTING.md` for the complete quality checklist (execution, commenting,
 
 ---
 
-*Each script is a proof. The algorithm is simpler than you think.*
+_Each script is a proof. The algorithm is simpler than you think._
