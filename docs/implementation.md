@@ -1,6 +1,6 @@
 # no-magic — Implementation Plan
 
-This document details every script planned for the `no-magic` repository: what each one teaches, what it implements, architectural decisions, dataset strategy, and expected complexity. Use this as the engineering spec for building out the collection.
+This document details every script in the `no-magic` repository: what each one teaches, what it implements, architectural decisions, dataset strategy, and expected complexity. Use this as the engineering spec for building out the collection.
 
 ### Relationship to Karpathy's Work
 
@@ -93,8 +93,6 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 > _"The most atomic way to train and inference a GPT in pure, dependency-free Python."_
 
-**Status:** To be implemented. Inspired by Karpathy's microgpt.py but written from scratch for this project's commenting standard and pedagogical goals. Full attribution in file header.
-
 **What it teaches:**
 
 - Scalar autograd via reverse-mode automatic differentiation
@@ -164,7 +162,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 
 **Historical context note:** This script exists to provide the "before" picture. Karpathy's [makemore](https://github.com/karpathy/makemore) series walks through this progression across multiple notebooks. Here, both models live in one file so the comparison is immediate and inescapable.
 
-**Hyperparameters:** `n_hidden=32, seq_len=16, lr=0.01, steps=500 per model, ~800 params (RNN), ~800 params (GRU)`
+**Hyperparameters:** `n_hidden=32, seq_len=16, lr=0.1 (SGD), steps=3000 per model, ~800 params (RNN), ~800 params (GRU)`
 
 **Success criteria:**
 
@@ -201,7 +199,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 6. Decoding: map token IDs back to byte strings
 ```
 
-**Dataset:** Same `names.txt` or a small text corpus (e.g., first 100KB of a public domain book fetched via `urllib`)
+**Dataset:** `names.txt` from Karpathy's makemore (~32K names, auto-downloaded via urllib)
 
 **Key implementation details:**
 
@@ -293,8 +291,6 @@ This prevents readers from skipping the autograd section and missing per-script 
 4. Feed the augmented input into a small trained language model
 5. Generate output conditioned on both the query and retrieved context
 ```
-
-**Dataset:** A small knowledge base — e.g., a collection of short factual paragraphs (can be synthetically generated or fetched from a public domain source). The LM component trains on this same corpus.
 
 **Dataset:** 100 synthetic factual paragraphs (cities, countries, basic facts). Generated programmatically within the script — no download needed. Simple enough to verify retrieval quality by inspection.
 
@@ -539,7 +535,7 @@ This prevents readers from skipping the autograd section and missing per-script 
 - PPO clipping: `min(ratio * advantage, clip(ratio, 1-ε, 1+ε) * advantage)`
 - KL penalty: explicit computation of `KL(policy || reference)` per sequence
 - Advantage estimation: simple `reward - value_baseline` (no GAE to keep it tractable)
-- Training: 200 PPO steps, batch_size=5, seq_len=8
+- Training: 100 PPO steps, batch_size=4, seq_len=8
 - This is the most complex script in the collection — budget accordingly
 
 ```python
@@ -820,8 +816,8 @@ For each attention variant:
 
 ```
 1. Train two language models inline (reuses microgpt's autograd pattern):
-   - Large "target" model: n_embd=16, n_layer=2 (~4,200 params)
-   - Small "draft" model: n_embd=8, n_layer=1 (~1,000 params)
+   - Large "target" model: n_embd=16, n_layer=1 (~4,200 params)
+   - Small "draft" model: n_embd=8, n_layer=1 (~1,300 params)
 2. Implement each decoding strategy as a separate function
 3. Generate from the same prompt with each strategy
 4. Print: generated text, total log-probability, generation speed (simulated)
@@ -855,7 +851,7 @@ For each attention variant:
 
 ## Implementation Priority & Sequencing
 
-Scripts should be built in this order to manage dependencies and validate the shared autograd/model patterns. The canonical autograd interface (`docs/autograd-interface.md`) must be finalized before Phase 2 begins.
+Scripts were built in this order to manage dependencies and validate the shared autograd/model patterns. The canonical autograd interface (`docs/autograd-interface.md`) was finalized before Phase 2.
 
 | Phase       | Scripts                                           | Rationale                                                                                                                                                                                  |
 | ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

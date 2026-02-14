@@ -1,6 +1,6 @@
 # Canonical Autograd Interface
 
-This document defines the scalar autograd `Value` class interface that all scripts must implement. The interface ensures consistency across the 8+ scripts that use scalar automatic differentiation while allowing per-script extensions.
+This document defines the scalar autograd `Value` class interface that all scripts must implement. The interface ensures consistency across the 9 scripts that use scalar automatic differentiation while allowing per-script extensions.
 
 ## Why This Exists
 
@@ -76,13 +76,17 @@ Scripts that need additional operations beyond the base set must:
 
 ### Known Extensions by Script
 
-| Script         | Additional Operations | Why Needed                                     |
-| -------------- | --------------------- | ---------------------------------------------- |
-| `micrornn.py`  | `sigmoid()`           | GRU gating: `z_t = sigmoid(...)`               |
-| `microlora.py` | (none beyond base)    | Uses base set                                  |
-| `microdpo.py`  | `log()`               | Log-probability ratios in DPO loss             |
-| `microppo.py`  | `log()`, `clip()`     | PPO ratio clipping, log-probs                  |
-| `micromoe.py`  | (router only)         | Router uses base set; experts are plain floats |
+| Script           | Additional Operations | Why Needed                                     |
+| ---------------- | --------------------- | ---------------------------------------------- |
+| `microgpt.py`    | (none beyond base)    | Reference implementation of canonical interface |
+| `micrornn.py`    | `sigmoid()`           | GRU gating: `z_t = sigmoid(...)`               |
+| `microlora.py`   | (none beyond base)    | Uses base set                                  |
+| `microdpo.py`    | (none beyond base)    | `log()` is in the base set                     |
+| `microppo.py`    | `clip()`              | PPO ratio clipping                             |
+| `micromoe.py`    | (router only)         | Router uses base set; experts are plain floats |
+| `microkv.py`     | (none beyond base)    | Compact Value class for training only          |
+| `microquant.py`  | (none beyond base)    | Autograd for training; quantization uses floats |
+| `microbeam.py`   | (none beyond base)    | Autograd for training; decoding uses floats    |
 
 ### Autograd Callout Pattern
 

@@ -190,7 +190,7 @@ Target roughly 30-40% of lines as comments or blank lines. This is not a hard me
 
 ### Before You Start
 
-1. **Check existing issues and the implementation plan.** The `implementation.md` file lists all planned scripts with detailed specs. If you want to implement one, comment on the corresponding issue (or open one) to claim it.
+1. **Check existing issues and the implementation plan.** The `implementation.md` file documents all scripts with detailed specs.
 2. **For new algorithm ideas**, open an issue first. Describe the algorithm, what it teaches, the dataset you'd use, and the expected line count. Wait for approval before writing code.
 3. **For improvements to existing scripts**, open an issue describing what you'd change and why. Small fixes (typos, numerical bugs) can go straight to a PR.
 
@@ -219,7 +219,7 @@ Your pull request must **not** include:
 - Changes to other scripts (unless fixing a cross-cutting bug).
 - New directories outside the established structure.
 - Any file other than the single `.py` script (no READMEs per script, no notebooks, no test files).
-- Changes to `CONTRIBUTING.md` or `overview.md` (open an issue to discuss these).
+- Changes to `CONTRIBUTING.md` (open an issue to discuss these).
 
 ### Review Process
 

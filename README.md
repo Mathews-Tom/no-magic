@@ -58,7 +58,7 @@ See [`03-systems/README.md`](03-systems/README.md) for the full algorithm list a
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/no-magic.git
+git clone https://github.com/Mathews-Tom/no-magic.git
 cd no-magic
 
 # Pick any script and run it
@@ -73,14 +73,14 @@ That's it. No virtual environments, no dependency installation, no configuration
 - 8 GB RAM
 - Any modern CPU (2019-era or newer)
 
-### Suggested Learning Path
+### Quick Start Path
 
-If you're working through the scripts systematically, this order builds concepts incrementally:
+If you're working through the scripts systematically, this subset builds core concepts incrementally:
 
 ```plaintext
 microtokenizer.py     → How text becomes numbers
 microembedding.py     → How meaning becomes geometry
-microgpt.py        → How sequences become predictions
+microgpt.py           → How sequences become predictions
 microrag.py           → How retrieval augments generation
 microattention.py     → How attention actually works (all variants)
 microlora.py          → How fine-tuning works efficiently
@@ -89,7 +89,7 @@ microquant.py         → How models get compressed
 microflash.py         → How attention gets fast
 ```
 
-For comprehensive coverage of all algorithms, see `docs/implementation.md`.
+This covers 9 of 16 scripts. Each tier's README has the full algorithm list for that category. See `docs/implementation.md` for comprehensive specs on all 16 scripts.
 
 ## Inspiration & Attribution
 
