@@ -4,18 +4,20 @@ The engineering that makes models fast, small, and deployable. These scripts dem
 
 ## Scripts
 
-| Script               | Algorithm                                                         | Run Time | Status   |
-| -------------------- | ----------------------------------------------------------------- | -------- | -------- |
-| `microattention.py`  | Attention variants compendium (MHA, GQA, MQA, sliding window)     | < 1s     | Complete |
-| `microbeam.py`       | Decoding strategies (greedy, top-k, top-p, beam, speculative)     | 1m 27s   | Complete |
-| `microcheckpoint.py` | Activation/gradient checkpointing — trading compute for memory    | < 1s     | Complete |
-| `microflash.py`      | Flash Attention algorithmic simulation (tiling, online softmax)   | < 1s     | Complete |
-| `microkv.py`         | KV-cache mechanics (with vs. without, paged attention)            | 0m 33s   | Complete |
-| `micropaged.py`      | PagedAttention — vLLM-style paged KV-cache memory management      | < 1s     | Complete |
-| `microparallel.py`   | Tensor and pipeline parallelism — distributed model inference     | 0m 27s   | Complete |
-| `microquant.py`      | Weight quantization (INT8, INT4, per-channel vs. per-tensor)      | 1m 22s   | Complete |
-| `microrope.py`       | Rotary Position Embedding (RoPE) — position via rotation matrices | < 1s     | Complete |
-| `microssm.py`        | State Space Models (Mamba-style) — linear-time sequence modeling  | 0m 34s   | Complete |
+Measured on Apple M-series, Python 3.12. Times are wall-clock.
+
+| Script               | Algorithm                                                         | Time   | Status |
+| -------------------- | ----------------------------------------------------------------- | ------ | ------ |
+| `microattention.py`  | Attention variants compendium (MHA, GQA, MQA, sliding window)     | < 1s   | Pass   |
+| `microbeam.py`       | Decoding strategies (greedy, top-k, top-p, beam, speculative)     | 1m 27s | Pass   |
+| `microcheckpoint.py` | Activation/gradient checkpointing — trading compute for memory    | < 1s   | Pass   |
+| `microflash.py`      | Flash Attention algorithmic simulation (tiling, online softmax)   | < 1s   | Pass   |
+| `microkv.py`         | KV-cache mechanics (with vs. without, paged attention)            | 0m 33s | Pass   |
+| `micropaged.py`      | PagedAttention — vLLM-style paged KV-cache memory management      | < 1s   | Pass   |
+| `microparallel.py`   | Tensor and pipeline parallelism — distributed model inference     | 0m 27s | Pass   |
+| `microquant.py`      | Weight quantization (INT8, INT4, per-channel vs. per-tensor)      | 1m 22s | Pass   |
+| `microrope.py`       | Rotary Position Embedding (RoPE) — position via rotation matrices | < 1s   | Pass   |
+| `microssm.py`        | State Space Models (Mamba-style) — linear-time sequence modeling  | 0m 34s | Pass   |
 
 ### Forward-Pass Scripts
 
@@ -24,23 +26,6 @@ The engineering that makes models fast, small, and deployable. These scripts dem
 ### Algorithmic Simulations
 
 `microflash.py` is an **algorithmic simulation** of Flash Attention. Pure Python will be slower than standard attention. The script demonstrates _what_ Flash Attention does (tiled computation, online softmax), not _why_ it's fast in practice (GPU memory hierarchy optimization). Comments make this distinction explicit.
-
-## Test Results
-
-Measured on Apple M-series, Python 3.12. Times are wall-clock.
-
-| Script               | Status | Time   |
-| -------------------- | ------ | ------ |
-| `microattention.py`  | Pass   | < 1s   |
-| `microbeam.py`       | Pass   | 1m 27s |
-| `microcheckpoint.py` | Pass   | < 1s   |
-| `microflash.py`      | Pass   | < 1s   |
-| `microkv.py`         | Pass   | 0m 33s |
-| `micropaged.py`      | Pass   | < 1s   |
-| `microparallel.py`   | Pass   | 0m 27s |
-| `microquant.py`      | Pass   | 1m 22s |
-| `microrope.py`       | Pass   | < 1s   |
-| `microssm.py`        | Pass   | 0m 34s |
 
 ## Future Candidates
 
