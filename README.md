@@ -49,23 +49,23 @@ This is not a beginner's introduction to programming. You should be comfortable 
 
 The repository is organized into three tiers based on conceptual dependency:
 
-### 01 — Foundations
+### 01 — Foundations (11 scripts)
 
-Core algorithms that form the building blocks of modern AI systems. These are the primitives — if you understand these, everything else is composition.
+Core algorithms that form the building blocks of modern AI systems. GPT, RNN, BERT, CNN, GAN, VAE, diffusion, embeddings, tokenization, RAG, and optimizer comparison.
 
-See [`01-foundations/README.md`](01-foundations/README.md) for the full algorithm list and roadmap.
+See [`01-foundations/README.md`](01-foundations/README.md) for the full algorithm list, timing data, and roadmap.
 
-### 02 — Alignment & Training Techniques
+### 02 — Alignment & Training Techniques (9 scripts)
 
-Methods for steering, fine-tuning, and aligning models after pretraining. These are the techniques that turn a base model into something useful.
+Methods for steering, fine-tuning, and aligning models after pretraining. LoRA, QLoRA, DPO, PPO, GRPO, REINFORCE, MoE, batch normalization, and dropout/regularization.
 
-See [`02-alignment/README.md`](02-alignment/README.md) for the full algorithm list and roadmap.
+See [`02-alignment/README.md`](02-alignment/README.md) for the full algorithm list, timing data, and roadmap.
 
-### 03 — Systems & Inference
+### 03 — Systems & Inference (10 scripts)
 
-The engineering that makes models fast, small, and deployable. These scripts demystify the optimizations that turn research prototypes into production systems.
+The engineering that makes models fast, small, and deployable. Attention variants, Flash Attention, KV-cache, PagedAttention, RoPE, quantization, beam search, checkpointing, parallelism, and SSMs.
 
-See [`03-systems/README.md`](03-systems/README.md) for the full algorithm list and roadmap.
+See [`03-systems/README.md`](03-systems/README.md) for the full algorithm list, timing data, and roadmap.
 
 ## How to Use This Repo
 
@@ -94,15 +94,18 @@ If you're working through the scripts systematically, this subset builds core co
 microtokenizer.py     → How text becomes numbers
 microembedding.py     → How meaning becomes geometry
 microgpt.py           → How sequences become predictions
-microrag.py           → How retrieval augments generation
-microattention.py     → How attention actually works (all variants)
+microbert.py          → How bidirectional context differs from autoregressive
+microbatchnorm.py     → How normalizing activations stabilizes training
 microlora.py          → How fine-tuning works efficiently
 microdpo.py           → How preference alignment works
+microattention.py     → How attention actually works (all variants)
+microrope.py          → How position gets encoded through rotation
 microquant.py         → How models get compressed
 microflash.py         → How attention gets fast
+microssm.py           → How Mamba models bypass attention entirely
 ```
 
-This covers 9 of 16 scripts. Each tier's README has the full algorithm list for that category. See `docs/implementation.md` for comprehensive specs on all 16 scripts.
+This covers 12 of 30 scripts. Each tier's README has the full algorithm list with measured run times for that category.
 
 ## Inspiration & Attribution
 
@@ -114,7 +117,7 @@ Karpathy proved that there's enormous demand for "the algorithm, naked." `no-mag
 
 In the spirit of transparency: the code in this repository was co-authored with Claude (Anthropic). I designed the project — which algorithms to include, the three-tier structure, the constraint system, the learning path, and how each script should be organized — then directed the implementations and verified that every script trains and infers correctly end-to-end on CPU.
 
-I'm not claiming to have hand-typed 16 algorithms from scratch. The value of this project is in the curation, the architectural decisions, and the fact that every script works as a self-contained, runnable learning resource. The line-by-line code generation was collaborative.
+I'm not claiming to have hand-typed 30 algorithms from scratch. The value of this project is in the curation, the architectural decisions, and the fact that every script works as a self-contained, runnable learning resource. The line-by-line code generation was collaborative.
 
 This is how I build in 2026. I'd rather be upfront about it.
 
