@@ -4,12 +4,17 @@ Methods for steering, fine-tuning, and aligning models after pretraining. These 
 
 ## Scripts
 
-| Script         | Algorithm                                                | Status   |
-| -------------- | -------------------------------------------------------- | -------- |
-| `microlora.py` | Low-Rank Adaptation (LoRA) fine-tuning                   | Complete |
-| `microdpo.py`  | Direct Preference Optimization                           | Complete |
-| `microppo.py`  | Proximal Policy Optimization for RLHF (hybrid autograd)  | Complete |
-| `micromoe.py`  | Mixture of Experts with sparse routing (hybrid autograd) | Complete |
+| Script              | Algorithm                                                             | Run Time | Status   |
+| ------------------- | --------------------------------------------------------------------- | -------- | -------- |
+| `microbatchnorm.py` | Batch Normalization — internal covariate shift and running statistics | 0m 34s   | Complete |
+| `microdpo.py`       | Direct Preference Optimization                                        | 2m 42s   | Complete |
+| `microdropout.py`   | Dropout, weight decay, and early stopping as regularization           | 3m 21s   | Complete |
+| `microgrpo.py`      | Group Relative Policy Optimization (DeepSeek's RLHF simplification)   | 0m 23s   | Complete |
+| `microlora.py`      | Low-Rank Adaptation (LoRA) fine-tuning                                | 2m 32s   | Complete |
+| `micromoe.py`       | Mixture of Experts with sparse routing (hybrid autograd)              | 0m 06s   | Complete |
+| `microppo.py`       | Proximal Policy Optimization for RLHF (hybrid autograd)               | 0m 34s   | Complete |
+| `microqlora.py`     | QLoRA — fine-tuning 4-bit quantized models with LoRA adapters         | 2m 27s   | Complete |
+| `microreinforce.py` | REINFORCE — vanilla policy gradient with baseline                     | 5m 39s   | Complete |
 
 ### Hybrid Autograd Scripts
 
@@ -20,23 +25,41 @@ Methods for steering, fine-tuning, and aligning models after pretraining. These 
 
 See `docs/autograd-interface.md` for the canonical interface and `docs/implementation.md` for per-script details.
 
+## Test Results
+
+Measured on Apple M-series, Python 3.12. Times are wall-clock.
+
+| Script              | Status | Time   |
+| ------------------- | ------ | ------ |
+| `microbatchnorm.py` | Pass   | 0m 34s |
+| `microdpo.py`       | Pass   | 2m 42s |
+| `microdropout.py`   | Pass   | 3m 21s |
+| `microgrpo.py`      | Pass   | 0m 23s |
+| `microlora.py`      | Pass   | 2m 32s |
+| `micromoe.py`       | Pass   | 0m 06s |
+| `microppo.py`       | Pass   | 0m 34s |
+| `microqlora.py`     | Pass   | 2m 27s |
+| `microreinforce.py` | Pass   | 5m 39s |
+
 ## Future Candidates
 
-| Algorithm                    | What It Would Teach                                 | Notes                                                             |
-| ---------------------------- | --------------------------------------------------- | ----------------------------------------------------------------- |
-| **REINFORCE**                | Vanilla policy gradient with baseline               | Simpler RL alternative, foundation for understanding PPO          |
-| **Dropout / Regularization** | Why random neuron deactivation prevents overfitting | Could cover dropout, weight decay, and early stopping in one file |
-| **Batch Normalization**      | Internal covariate shift, running statistics        | The technique that made deep networks trainable                   |
-| **Learning Rate Scheduling** | Warmup, cosine decay, step decay                    | How schedule choice affects convergence                           |
-| **Knowledge Distillation**   | Training small models to mimic large ones           | Compression via soft targets                                      |
+| Algorithm                    | What It Would Teach                       | Notes                                   |
+| ---------------------------- | ----------------------------------------- | --------------------------------------- |
+| **Learning Rate Scheduling** | Warmup, cosine decay, step decay          | How schedule choice affects convergence |
+| **Knowledge Distillation**   | Training small models to mimic large ones | Compression via soft targets            |
 
 ## Learning Path
 
 These scripts build on the foundations tier. Recommended order:
 
 ```
-microlora.py   → How fine-tuning works efficiently (1% of parameters)
-microdpo.py    → How preference alignment works (without reward model)
-microppo.py    → How RLHF works (the full reward → policy loop)
-micromoe.py    → How sparse routing scales model capacity
+microbatchnorm.py   → How normalizing activations stabilizes training
+microdropout.py     → How regularization prevents overfitting
+microlora.py        → How fine-tuning works efficiently (1% of parameters)
+microqlora.py       → How quantization combines with LoRA for memory efficiency
+microreinforce.py   → How policy gradients turn rewards into learning signals
+microdpo.py         → How preference alignment works (without reward model)
+microppo.py         → How RLHF works (the full reward → policy loop)
+microgrpo.py        → How DeepSeek simplified RLHF with group-relative rewards
+micromoe.py         → How sparse routing scales model capacity
 ```
