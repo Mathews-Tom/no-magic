@@ -16,6 +16,8 @@
 
 **Because `model.fit()` isn't an explanation.**
 
+<video src="https://github.com/Mathews-Tom/no-magic/raw/main/assets/no_magic_overview.mp4" width="100%" autoplay loop muted playsinline></video>
+
 ---
 
 ## What This Is
@@ -155,18 +157,37 @@ brew install cairo pango ffmpeg gifsicle
 
 # Ubuntu/Debian system deps (one-time)
 sudo apt-get install -y libcairo2-dev libpango1.0-dev ffmpeg gifsicle
+```
 
+**Using the Python renderer** (`render_all.py`):
+
+```bash
 # Render all 30 scenes — full 1080p60 MP4 + 480p GIF previews
-bash videos/render.sh
+python videos/render_all.py
 
-# Render a single algorithm
-bash videos/render.sh microattention
-
-# GIF previews only (faster)
-bash videos/render.sh --preview-only
+# Render specific scenes only
+python videos/render_all.py microattention microgpt microlora
 
 # Full MP4s only (no GIFs)
-bash videos/render.sh --full-only
+python videos/render_all.py --full-only
+
+# GIF previews only (faster)
+python videos/render_all.py --preview-only
+
+# Custom quality (low/medium/high/4k)
+python videos/render_all.py --quality medium
+
+# Skip GIF optimization step
+python videos/render_all.py --preview-only --skip-optimize
+```
+
+**Using the shell renderer** (`render.sh`):
+
+```bash
+bash videos/render.sh                    # all scenes (MP4 + GIF)
+bash videos/render.sh microattention     # single scene
+bash videos/render.sh --preview-only     # GIF previews only
+bash videos/render.sh --full-only        # MP4s only
 ```
 
 Output lands in `videos/renders/` (MP4) and `videos/previews/` (GIF). Full rendering details in [`videos/README.md`](videos/README.md).
