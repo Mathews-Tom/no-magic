@@ -16,7 +16,7 @@
 
 **Because `model.fit()` isn't an explanation.**
 
-<video src="https://github.com/user-attachments/assets/572a2d54-60d8-4699-9df0-8bfd667c4614" width="100%" autoplay loop muted playsinline></video>
+<video src="https://github.com/user-attachments/assets/b42b3b7b-6cc0-404a-a7ba-86a193a181a5" width="100%" autoplay loop muted playsinline></video>
 
 ---
 
