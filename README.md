@@ -16,7 +16,7 @@
 
 **Because `model.fit()` isn't an explanation.**
 
-<video src="https://github.com/Mathews-Tom/no-magic/raw/main/assets/no_magic_overview.mp4" width="100%" autoplay loop muted playsinline></video>
+<video src="https://github.com/user-attachments/assets/572a2d54-60d8-4699-9df0-8bfd667c4614" width="100%" autoplay loop muted playsinline></video>
 
 ---
 
