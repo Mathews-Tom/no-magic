@@ -142,6 +142,35 @@ Every script in this repository is an **executable proof** that these algorithms
 > All 30 algorithms have animated visualizations. Full 1080p60 videos in [Releases](https://github.com/Mathews-Tom/no-magic/releases).
 > Video source scenes in [`videos/scenes/`](videos/scenes/) — built with [Manim](https://www.manim.community/).
 
+### Rendering Videos Locally
+
+All visualizations can be rendered from source. System dependencies: `cairo`, `pango`, `ffmpeg`, and optionally `gifsicle` for GIF optimization.
+
+```bash
+# Install Manim (one-time)
+pip install -r videos/requirements.txt
+
+# macOS system deps (one-time)
+brew install cairo pango ffmpeg gifsicle
+
+# Ubuntu/Debian system deps (one-time)
+sudo apt-get install -y libcairo2-dev libpango1.0-dev ffmpeg gifsicle
+
+# Render all 30 scenes — full 1080p60 MP4 + 480p GIF previews
+bash videos/render.sh
+
+# Render a single algorithm
+bash videos/render.sh microattention
+
+# GIF previews only (faster)
+bash videos/render.sh --preview-only
+
+# Full MP4s only (no GIFs)
+bash videos/render.sh --full-only
+```
+
+Output lands in `videos/renders/` (MP4) and `videos/previews/` (GIF). Full rendering details in [`videos/README.md`](videos/README.md).
+
 ## Philosophy
 
 Modern ML education has a gap. There are thousands of tutorials that teach you to call library functions, and there are academic papers full of notation. What's missing is the middle layer: **the algorithm itself, expressed as readable code**.
