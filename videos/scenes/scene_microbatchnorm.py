@@ -47,13 +47,13 @@ class BatchNormScene(NoMagicScene):
         mean_label = Text(f"\u03bc={mean_val:.1f}", font_size=12, color=NM_YELLOW)
         mean_label.next_to(mean_line, UP, buff=0.1)
 
-        self.play(Write(before_label), Create(before_line), run_time=0.4)
+        self.play(Write(before_label), Create(before_line), run_time=0.6)
         self.play(
             LaggedStart(*[FadeIn(d, scale=0.5) for d in before_dots], lag_ratio=0.05),
-            run_time=0.4,
+            run_time=0.6,
         )
-        self.play(Create(mean_line), FadeIn(mean_label), run_time=0.3)
-        self.wait(0.3)
+        self.play(Create(mean_line), FadeIn(mean_label), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 2: Show the normalization formula ===
         formula = VGroup(
@@ -65,9 +65,9 @@ class BatchNormScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(f) for f in formula], lag_ratio=0.2),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 3: Show normalized activations (centered, tight) ===
         after_label = Text("After BatchNorm", font_size=20, color=NM_GREEN, weight=BOLD)
@@ -98,7 +98,7 @@ class BatchNormScene(NoMagicScene):
         zero_label = Text("\u03bc=0", font_size=12, color=NM_YELLOW)
         zero_label.next_to(zero_line, UP, buff=0.1)
 
-        self.play(Write(after_label), Create(after_line), run_time=0.4)
+        self.play(Write(after_label), Create(after_line), run_time=0.6)
 
         # Animate dots transforming from scattered to normalized
         transform_arrows = VGroup()
@@ -112,15 +112,15 @@ class BatchNormScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[GrowArrow(a) for a in transform_arrows], lag_ratio=0.03),
-            run_time=0.5,
+            run_time=0.8,
         )
         self.play(
             LaggedStart(*[FadeIn(d, scale=0.5) for d in after_dots], lag_ratio=0.05),
             FadeOut(transform_arrows),
-            run_time=0.4,
+            run_time=0.6,
         )
-        self.play(Create(zero_line), FadeIn(zero_label), run_time=0.2)
-        self.wait(0.3)
+        self.play(Create(zero_line), FadeIn(zero_label), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 4: Training benefit ===
         benefit = VGroup(
@@ -131,8 +131,8 @@ class BatchNormScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(b, shift=UP * 0.15) for b in benefit], lag_ratio=0.2),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

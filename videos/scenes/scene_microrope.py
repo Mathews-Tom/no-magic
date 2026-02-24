@@ -21,7 +21,7 @@ class RoPEScene(NoMagicScene):
         # === Step 1: Show a 2D vector being rotated ===
         plane_label = Text("2D embedding subspace", font_size=18, color=NM_BLUE, weight=BOLD)
         plane_label.move_to(UP * 2.8)
-        self.play(Write(plane_label), run_time=0.3)
+        self.play(Write(plane_label), run_time=0.4)
 
         # Draw axes
         axes = Axes(
@@ -32,7 +32,7 @@ class RoPEScene(NoMagicScene):
         )
         axes.move_to(LEFT * 3.0 + DOWN * 0.3)
 
-        self.play(Create(axes), run_time=0.4)
+        self.play(Create(axes), run_time=0.6)
 
         # Show a query vector at position 0
         vec_angle_0 = 0.5  # radians
@@ -46,8 +46,8 @@ class RoPEScene(NoMagicScene):
         q_label = Text("Q (pos=0)", font_size=13, color=NM_PRIMARY)
         q_label.next_to(q_arrow.get_end(), UR, buff=0.1)
 
-        self.play(GrowArrow(q_arrow), FadeIn(q_label), run_time=0.4)
-        self.wait(0.2)
+        self.play(GrowArrow(q_arrow), FadeIn(q_label), run_time=0.6)
+        self.wait(0.4)
 
         # Rotate by theta for position 1
         theta_1 = 0.6  # rotation angle for position 1
@@ -73,7 +73,7 @@ class RoPEScene(NoMagicScene):
         self.play(
             GrowArrow(q_arrow_1), FadeIn(q_label_1),
             Create(arc), FadeIn(theta_label),
-            run_time=0.5,
+            run_time=0.8,
         )
 
         # Position 2 — another rotation
@@ -88,8 +88,8 @@ class RoPEScene(NoMagicScene):
         q_label_2 = Text("Q (pos=2)", font_size=13, color=NM_ORANGE)
         q_label_2.next_to(q_arrow_2.get_end(), UP, buff=0.1)
 
-        self.play(GrowArrow(q_arrow_2), FadeIn(q_label_2), run_time=0.4)
-        self.wait(0.3)
+        self.play(GrowArrow(q_arrow_2), FadeIn(q_label_2), run_time=0.6)
+        self.wait(0.6)
 
         # === Step 2: Show the rotation matrix formula ===
         formula_group = VGroup()
@@ -104,9 +104,9 @@ class RoPEScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(f) for f in formula_group], lag_ratio=0.15),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 3: Key insight — relative position in dot product ===
         insight_box = RoundedRectangle(
@@ -125,19 +125,19 @@ class RoPEScene(NoMagicScene):
         ).arrange(DOWN, buff=0.08)
         insight_text.move_to(insight_box.get_center())
 
-        self.play(FadeIn(insight_box), Write(insight_title), run_time=0.3)
+        self.play(FadeIn(insight_box), Write(insight_title), run_time=0.4)
         self.play(
             LaggedStart(*[FadeIn(t) for t in insight_text], lag_ratio=0.15),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: Multi-frequency visualization ===
         freq_label = Text("Different dimensions rotate at different frequencies", font_size=14, color=NM_PURPLE)
         freq_label.move_to(DOWN * 3.0)
 
-        self.play(FadeIn(freq_label, shift=UP * 0.15), run_time=0.4)
-        self.wait(0.8)
+        self.play(FadeIn(freq_label, shift=UP * 0.15), run_time=0.6)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

@@ -20,7 +20,7 @@ class PPOScene(NoMagicScene):
         # === Step 1: Show the 3-model RLHF pipeline ===
         pipeline_label = Text("RLHF Pipeline", font_size=22, color=NM_PRIMARY, weight=BOLD)
         pipeline_label.move_to(UP * 2.8)
-        self.play(Write(pipeline_label), run_time=0.3)
+        self.play(Write(pipeline_label), run_time=0.4)
 
         # Three model boxes
         model_data = [
@@ -51,9 +51,9 @@ class PPOScene(NoMagicScene):
         self.play(
             LaggedStart(*[FadeIn(m, shift=UP * 0.15) for m in model_boxes], lag_ratio=0.15),
             LaggedStart(*[FadeIn(d) for d in model_labels], lag_ratio=0.15),
-            run_time=0.7,
+            run_time=1.0,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Show the PPO loop ===
         loop_steps = [
@@ -74,13 +74,13 @@ class PPOScene(NoMagicScene):
         step_items.move_to(LEFT * 3.0 + DOWN * 1.5)
 
         for item in step_items:
-            self.play(FadeIn(item, shift=RIGHT * 0.2), run_time=0.3)
-        self.wait(0.3)
+            self.play(FadeIn(item, shift=RIGHT * 0.2), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 3: Show the clipping mechanism ===
         clip_title = Text("PPO Clipping", font_size=18, color=NM_PRIMARY, weight=BOLD)
         clip_title.move_to(RIGHT * 3.0 + DOWN * 0.6)
-        self.play(Write(clip_title), run_time=0.3)
+        self.play(Write(clip_title), run_time=0.4)
 
         # Visualize the clipped ratio
         clip_box = RoundedRectangle(
@@ -133,21 +133,21 @@ class PPOScene(NoMagicScene):
             LaggedStart(*[FadeIn(l) for l in tick_labels_group], lag_ratio=0.1),
             FadeIn(clip_zone), FadeIn(clip_label),
             FadeIn(no_update),
-            run_time=0.7,
+            run_time=1.0,
         )
 
         # Animate a ratio dot moving and getting clipped
         dot = Dot(ratio_line.point_from_proportion(0.5), radius=0.08, color=NM_YELLOW)
-        self.play(FadeIn(dot), run_time=0.15)
+        self.play(FadeIn(dot), run_time=0.4)
         # Move right (policy improving) — within clip range
-        self.play(dot.animate.move_to(ratio_line.point_from_proportion(0.65)), run_time=0.3)
+        self.play(dot.animate.move_to(ratio_line.point_from_proportion(0.65)), run_time=0.4)
         # Move further — hits clip boundary
-        self.play(dot.animate.move_to(ratio_line.point_from_proportion(0.7)), run_time=0.2)
+        self.play(dot.animate.move_to(ratio_line.point_from_proportion(0.7)), run_time=0.4)
         # Flash red at boundary
-        self.play(dot.animate.set_color(NM_PRIMARY), run_time=0.15)
-        self.play(dot.animate.move_to(ratio_line.point_from_proportion(0.7)), run_time=0.1)
+        self.play(dot.animate.set_color(NM_PRIMARY), run_time=0.4)
+        self.play(dot.animate.move_to(ratio_line.point_from_proportion(0.7)), run_time=0.4)
 
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: Summary ===
         summary = Text(
@@ -155,8 +155,8 @@ class PPOScene(NoMagicScene):
             font_size=16, color=NM_YELLOW, weight=BOLD,
         )
         summary.move_to(DOWN * 3.5)
-        self.play(FadeIn(summary, shift=UP * 0.15), run_time=0.4)
-        self.wait(0.8)
+        self.play(FadeIn(summary, shift=UP * 0.15), run_time=0.6)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

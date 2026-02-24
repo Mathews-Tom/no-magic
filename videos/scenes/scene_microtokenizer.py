@@ -39,9 +39,9 @@ class TokenizerScene(NoMagicScene):
         self.play(
             Write(text_label),
             LaggedStart(*[FadeIn(c, shift=DOWN * 0.15) for c in char_boxes], lag_ratio=0.08),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Show pair frequency counting ===
         freq_label = Text("Count adjacent pairs", font_size=18, color=NM_YELLOW, weight=BOLD)
@@ -55,17 +55,17 @@ class TokenizerScene(NoMagicScene):
         pair_items.arrange(RIGHT, buff=0.5)
         pair_items.next_to(freq_label, DOWN, buff=0.25)
 
-        self.play(Write(freq_label), run_time=0.3)
+        self.play(Write(freq_label), run_time=0.4)
         self.play(
             LaggedStart(*[FadeIn(p) for p in pair_items], lag_ratio=0.1),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 3: Merge most frequent pair — animate 3 merge rounds ===
         merge_label = Text("Merge most frequent pair", font_size=18, color=NM_GREEN, weight=BOLD)
         merge_label.move_to(DOWN * 0.3)
-        self.play(Write(merge_label), run_time=0.3)
+        self.play(Write(merge_label), run_time=0.4)
 
         # Simulate 3 merge rounds with different words
         merge_demos = [
@@ -111,7 +111,7 @@ class TokenizerScene(NoMagicScene):
             before_boxes.arrange(RIGHT, buff=0.12)
             before_boxes.move_to(demo_y)
 
-            self.play(FadeIn(before_boxes), run_time=0.25)
+            self.play(FadeIn(before_boxes), run_time=0.4)
 
             # Highlight the merging pair
             idx_a, idx_b = demo["merge_idx"]
@@ -125,8 +125,8 @@ class TokenizerScene(NoMagicScene):
             )
             merge_arrow_label.next_to(highlight, DOWN, buff=0.15)
 
-            self.play(Create(highlight), FadeIn(merge_arrow_label), run_time=0.3)
-            self.wait(0.2)
+            self.play(Create(highlight), FadeIn(merge_arrow_label), run_time=0.4)
+            self.wait(0.4)
 
             # Show after tokens
             after_boxes = VGroup()
@@ -146,13 +146,13 @@ class TokenizerScene(NoMagicScene):
             self.play(
                 FadeOut(before_boxes), FadeOut(highlight), FadeOut(merge_arrow_label),
                 FadeIn(after_boxes),
-                run_time=0.35,
+                run_time=0.5,
             )
-            self.wait(0.2)
-            self.play(FadeOut(after_boxes), run_time=0.15)
+            self.wait(0.4)
+            self.play(FadeOut(after_boxes), run_time=0.4)
 
         # === Step 4: Final result ===
-        self.play(FadeOut(freq_label), FadeOut(pair_items), FadeOut(merge_label), run_time=0.3)
+        self.play(FadeOut(freq_label), FadeOut(pair_items), FadeOut(merge_label), run_time=0.4)
 
         result_before = Text('"lower" → 5 bytes', font_size=18, color=NM_BLUE)
         result_after = Text('"lower" → 2 tokens: [lo][wer]', font_size=18, color=NM_GREEN, weight=BOLD)
@@ -165,9 +165,9 @@ class TokenizerScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(r, shift=UP * 0.15) for r in result_group], lag_ratio=0.2),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

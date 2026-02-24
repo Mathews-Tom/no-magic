@@ -34,14 +34,14 @@ class QLoRAScene(NoMagicScene):
         self.play(
             Write(standard_label),
             FadeIn(std_bar), FadeIn(std_text), FadeIn(std_mem),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 2: Show QLoRA architecture ===
         qlora_label = Text("QLoRA", font_size=18, color=NM_GREEN, weight=BOLD)
         qlora_label.move_to(RIGHT * 3.0 + UP * 2.5)
-        self.play(Write(qlora_label), run_time=0.3)
+        self.play(Write(qlora_label), run_time=0.4)
 
         # Quantized base model (large, blue)
         base_box = RoundedRectangle(
@@ -71,7 +71,7 @@ class QLoRAScene(NoMagicScene):
 
         self.play(
             FadeIn(base_box), Write(base_label), FadeIn(frozen), FadeIn(quant_cells),
-            run_time=0.5,
+            run_time=0.8,
         )
 
         # LoRA adapters (small, green)
@@ -104,9 +104,9 @@ class QLoRAScene(NoMagicScene):
             FadeIn(lora_a_group, shift=LEFT * 0.2),
             FadeIn(lora_b_group, shift=LEFT * 0.2),
             FadeIn(fp16_label),
-            run_time=0.4,
+            run_time=0.6,
         )
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 3: Memory comparison ===
         qlora_mem = Text("~6 GB for 7B model", font_size=13, color=NM_GREEN, weight=BOLD)
@@ -121,8 +121,8 @@ class QLoRAScene(NoMagicScene):
         )
         technique.move_to(DOWN * 3.0)
 
-        self.play(FadeIn(qlora_mem), run_time=0.3)
-        self.play(FadeIn(savings, shift=UP * 0.15), FadeIn(technique), run_time=0.4)
-        self.wait(0.8)
+        self.play(FadeIn(qlora_mem), run_time=0.4)
+        self.play(FadeIn(savings, shift=UP * 0.15), FadeIn(technique), run_time=0.6)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

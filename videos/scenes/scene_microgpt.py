@@ -49,10 +49,10 @@ class GPTScene(NoMagicScene):
         stage_boxes.arrange(RIGHT, buff=0.6)
         stage_boxes.next_to(block_label, DOWN, buff=0.4)
 
-        self.play(Write(block_label), run_time=0.4)
+        self.play(Write(block_label), run_time=0.6)
         self.play(
             LaggedStart(*[FadeIn(b, shift=UP * 0.2) for b in stage_boxes], lag_ratio=0.15),
-            run_time=0.8,
+            run_time=1.2,
         )
 
         # Arrows between stages
@@ -66,14 +66,14 @@ class GPTScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[GrowArrow(a) for a in arrows], lag_ratio=0.1),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Show the autoregressive generation loop ===
         loop_label = Text("Autoregressive Generation", font_size=20, color=NM_YELLOW, weight=BOLD)
         loop_label.move_to(DOWN * 0.5)
-        self.play(Write(loop_label), run_time=0.4)
+        self.play(Write(loop_label), run_time=0.6)
 
         # Token sequence area
         tokens = ["t", "h", "o", "m", "a"]
@@ -90,20 +90,20 @@ class GPTScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(t, shift=UP * 0.2) for t in token_group], lag_ratio=0.1),
-            run_time=0.6,
+            run_time=0.9,
         )
 
         context_brace = Brace(token_group, DOWN, color=NM_TEXT)
         context_label = Text("context window", font_size=16, color=NM_TEXT)
         context_label.next_to(context_brace, DOWN, buff=0.1)
-        self.play(FadeIn(context_brace), FadeIn(context_label), run_time=0.4)
-        self.wait(0.3)
+        self.play(FadeIn(context_brace), FadeIn(context_label), run_time=0.6)
+        self.wait(0.6)
 
         # === Step 3: Animate generation — predict next token ===
         for gen_tok in generated:
             # Highlight "Predict" stage
             predict_box = stage_boxes[-1]
-            self.play(Indicate(predict_box, color=NM_GREEN, scale_factor=1.1), run_time=0.4)
+            self.play(Indicate(predict_box, color=NM_GREEN, scale_factor=1.1), run_time=0.6)
 
             # Show probability distribution as small bars
             prob_labels = ["a", "s", "e", "i", "·"]
@@ -127,8 +127,8 @@ class GPTScene(NoMagicScene):
             prob_title.next_to(prob_bars, UP, buff=0.15)
             prob_bars.add(prob_title)
 
-            self.play(FadeIn(prob_bars, shift=UP * 0.2), run_time=0.5)
-            self.wait(0.4)
+            self.play(FadeIn(prob_bars, shift=UP * 0.2), run_time=0.8)
+            self.wait(0.8)
 
             # Sample the highest probability token
             new_tbox = make_token_box(gen_tok, NM_GREEN, fill_opacity=0.6)
@@ -139,7 +139,7 @@ class GPTScene(NoMagicScene):
             self.play(
                 FadeOut(prob_bars),
                 FadeIn(new_tbox, scale=1.3),
-                run_time=0.5,
+                run_time=0.8,
             )
             token_group.add(new_tbox)
 
@@ -150,12 +150,12 @@ class GPTScene(NoMagicScene):
             self.play(
                 ReplacementTransform(context_brace, new_brace),
                 ReplacementTransform(context_label, new_label),
-                run_time=0.3,
+                run_time=0.4,
             )
             context_brace = new_brace
             context_label = new_label
 
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: Show the loop arrow — "repeat" ===
         loop_arrow = CurvedArrow(
@@ -166,15 +166,15 @@ class GPTScene(NoMagicScene):
         repeat_text = Text("repeat", font_size=16, color=NM_YELLOW)
         repeat_text.next_to(loop_arrow, RIGHT, buff=0.15)
 
-        self.play(Create(loop_arrow), FadeIn(repeat_text), run_time=0.6)
-        self.wait(0.5)
+        self.play(Create(loop_arrow), FadeIn(repeat_text), run_time=0.9)
+        self.wait(1.0)
 
         # === Step 5: Show final generated sequence highlighted ===
         result_box = SurroundingRectangle(token_group, color=NM_GREEN, buff=0.12, stroke_width=2)
         result_label = Text("thomas", font_size=24, color=NM_GREEN, weight=BOLD)
         result_label.next_to(result_box, DOWN, buff=0.4)
-        self.play(Create(result_box), Write(result_label), run_time=0.6)
-        self.wait(0.8)
+        self.play(Create(result_box), Write(result_label), run_time=0.9)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

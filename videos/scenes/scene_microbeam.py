@@ -26,10 +26,10 @@ class BeamSearchScene(NoMagicScene):
         intro.move_to(UP * 2.5)
         self.play(
             LaggedStart(FadeIn(greedy_label), FadeIn(beam_label), lag_ratio=0.2),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.3)
-        self.play(FadeOut(intro), run_time=0.2)
+        self.wait(0.6)
+        self.play(FadeOut(intro), run_time=0.4)
 
         # === Step 2: Build the beam search tree ===
         # Tree structure: root -> depth 1 (3 candidates) -> depth 2 (keep 2, expand) -> depth 3
@@ -44,7 +44,7 @@ class BeamSearchScene(NoMagicScene):
         root_group = VGroup(root, root_label)
         root_group.move_to(UP * 2.2)
 
-        self.play(FadeIn(root_group), run_time=0.3)
+        self.play(FadeIn(root_group), run_time=0.4)
 
         # Depth 1: 3 candidates from root
         d1_tokens = [("J", 0.4), ("M", 0.35), ("A", 0.25)]
@@ -81,31 +81,31 @@ class BeamSearchScene(NoMagicScene):
             LaggedStart(*[GrowArrow(a) for a in d1_arrows], lag_ratio=0.1),
             LaggedStart(*[FadeIn(n, shift=DOWN * 0.1) for n in d1_nodes], lag_ratio=0.1),
             LaggedStart(*[FadeIn(p) for p in d1_probs], lag_ratio=0.1),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 3: Prune — keep top-2 (beam width) ===
         prune_label = Text(f"prune to beam width = {beam_width}", font_size=14, color=NM_PRIMARY)
         prune_label.move_to(RIGHT * 4.5 + UP * 0.8)
-        self.play(Write(prune_label), run_time=0.2)
+        self.play(Write(prune_label), run_time=0.4)
 
         # Fade out the pruned candidate (A, index 2)
         self.play(
             d1_nodes[2].animate.set_opacity(0.15),
             d1_arrows[2].animate.set_opacity(0.15),
             d1_probs[2].animate.set_opacity(0.15),
-            run_time=0.3,
+            run_time=0.4,
         )
 
         # Highlight surviving beams
         for i in range(beam_width):
             self.play(
                 d1_nodes[i][0].animate.set_stroke(NM_GREEN, width=2),
-                run_time=0.15,
+                run_time=0.4,
             )
 
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 4: Expand depth 2 from surviving beams ===
         d2_data = [
@@ -147,7 +147,7 @@ class BeamSearchScene(NoMagicScene):
             LaggedStart(*[GrowArrow(a) for a in d2_all_arrows], lag_ratio=0.08),
             LaggedStart(*[FadeIn(n, shift=DOWN * 0.1) for n in d2_all_nodes], lag_ratio=0.08),
             LaggedStart(*[FadeIn(p) for p in d2_all_probs], lag_ratio=0.08),
-            run_time=0.6,
+            run_time=0.9,
         )
 
         # Prune again — keep top-2 by cumulative probability
@@ -158,18 +158,18 @@ class BeamSearchScene(NoMagicScene):
             d2_all_nodes[3].animate.set_opacity(0.15),
             d2_all_arrows[3].animate.set_opacity(0.15),
             d2_all_probs[3].animate.set_opacity(0.15),
-            run_time=0.3,
+            run_time=0.4,
         )
         # Highlight winners
         self.play(
             d2_all_nodes[0][0].animate.set_stroke(NM_GREEN, width=2),
             d2_all_nodes[2][0].animate.set_stroke(NM_GREEN, width=2),
-            run_time=0.2,
+            run_time=0.4,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 5: Final result ===
-        self.play(FadeOut(prune_label), run_time=0.15)
+        self.play(FadeOut(prune_label), run_time=0.4)
         result = VGroup(
             Text('Best beam: "Ja" (cumulative prob 0.15)', font_size=16, color=NM_GREEN, weight=BOLD),
             Text("beam search explores O(k\u00b7V) paths vs greedy's O(V)",
@@ -179,9 +179,9 @@ class BeamSearchScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(r, shift=UP * 0.15) for r in result], lag_ratio=0.2),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

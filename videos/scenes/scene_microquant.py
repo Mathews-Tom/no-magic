@@ -47,13 +47,13 @@ class QuantizationScene(NoMagicScene):
             weight_dots.add(dot)
             weight_labels.add(label)
 
-        self.play(Write(float_label), Create(float_line), run_time=0.6)
+        self.play(Write(float_label), Create(float_line), run_time=0.9)
         self.play(
             LaggedStart(*[FadeIn(d, scale=0.5) for d in weight_dots], lag_ratio=0.05),
             LaggedStart(*[FadeIn(l) for l in weight_labels], lag_ratio=0.05),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.4)
+        self.wait(0.8)
 
         # === Step 2: Show quantization parameters ===
         params = VGroup(
@@ -63,9 +63,9 @@ class QuantizationScene(NoMagicScene):
         params.move_to(RIGHT * 4.0 + UP * 0.2)
         self.play(
             LaggedStart(*[Write(p) for p in params], lag_ratio=0.2),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 3: Show int8 number line (quantized) ===
         int_label = Text("Int8 quantized", font_size=22, color=NM_GREEN, weight=BOLD)
@@ -82,7 +82,7 @@ class QuantizationScene(NoMagicScene):
         )
         int_line.move_to(DOWN * 1.3)
 
-        self.play(Write(int_label), Create(int_line), run_time=0.6)
+        self.play(Write(int_label), Create(int_line), run_time=0.9)
 
         # === Step 4: Animate mapping — dots move from float line to int bins ===
         # Map float values to int8: q = round((val - min) / scale)
@@ -115,15 +115,15 @@ class QuantizationScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[GrowArrow(a) for a in arrows], lag_ratio=0.05),
-            run_time=0.8,
+            run_time=1.2,
         )
         self.play(
             LaggedStart(*[FadeIn(d, scale=0.5) for d in quant_dots], lag_ratio=0.05),
             LaggedStart(*[FadeIn(l) for l in quant_labels], lag_ratio=0.05),
             FadeOut(arrows),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.4)
+        self.wait(0.8)
 
         # === Step 5: Memory comparison ===
         comparison = VGroup(
@@ -136,9 +136,9 @@ class QuantizationScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(c, shift=UP * 0.15) for c in comparison], lag_ratio=0.15),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

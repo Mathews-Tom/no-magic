@@ -49,9 +49,9 @@ class REINFORCEScene(NoMagicScene):
         self.play(
             FadeIn(state_group), FadeIn(policy_group), FadeIn(action_group),
             GrowArrow(arr1), GrowArrow(arr2),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 2: Show reward signal ===
         reward_box = RoundedRectangle(
@@ -64,12 +64,12 @@ class REINFORCEScene(NoMagicScene):
         reward_group.move_to(RIGHT * 2.5 + UP * 1.0)
 
         arr3 = Arrow(action_dot.get_right(), reward_box.get_left(), color=NM_GRID, stroke_width=1.5, buff=0.1, tip_length=0.1)
-        self.play(GrowArrow(arr3), FadeIn(reward_group), run_time=0.3)
+        self.play(GrowArrow(arr3), FadeIn(reward_group), run_time=0.4)
 
         # === Step 3: REINFORCE gradient formula ===
         formula_label = Text("REINFORCE Update", font_size=20, color=NM_PRIMARY, weight=BOLD)
         formula_label.move_to(DOWN * 0.5)
-        self.play(Write(formula_label), run_time=0.3)
+        self.play(Write(formula_label), run_time=0.4)
 
         gradient = VGroup(
             Text("∇θ J = E[ ∇θ log π(a|s) · R ]", font_size=18, color=NM_YELLOW, weight=BOLD),
@@ -79,14 +79,14 @@ class REINFORCEScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(g) for g in gradient], lag_ratio=0.2),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: High variance problem + baseline ===
         problem = Text("Problem: high variance in R", font_size=14, color=NM_PRIMARY)
         problem.move_to(DOWN * 2.2)
-        self.play(FadeIn(problem), run_time=0.2)
+        self.play(FadeIn(problem), run_time=0.4)
 
         solution = VGroup(
             Text("Solution: subtract baseline b", font_size=14, color=NM_GREEN, weight=BOLD),
@@ -97,8 +97,8 @@ class REINFORCEScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(s, shift=UP * 0.1) for s in solution], lag_ratio=0.15),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

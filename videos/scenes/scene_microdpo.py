@@ -54,15 +54,15 @@ class DPOScene(NoMagicScene):
             FadeIn(preferred, shift=RIGHT * 0.3),
             FadeIn(rejected, shift=LEFT * 0.3),
             Write(vs_text),
-            run_time=0.8,
+            run_time=1.2,
         )
-        self.wait(0.5)
+        self.wait(1.0)
 
         # === Step 2: Show log probability comparison ===
         log_label = Text("compute log-probabilities under policy and reference",
                          font_size=16, color=NM_YELLOW)
         log_label.to_edge(UP, buff=0.5)
-        self.play(Write(log_label), run_time=0.5)
+        self.play(Write(log_label), run_time=0.8)
 
         # Probability bars for preferred
         pref_bar = Rectangle(width=3.0, height=0.35, color=NM_GREEN,
@@ -81,9 +81,9 @@ class DPOScene(NoMagicScene):
         self.play(
             GrowFromEdge(pref_bar, LEFT), FadeIn(pref_bar_label),
             GrowFromEdge(rej_bar, LEFT), FadeIn(rej_bar_label),
-            run_time=0.7,
+            run_time=1.0,
         )
-        self.wait(0.4)
+        self.wait(0.8)
 
         # === Step 3: Show the DPO loss formula ===
         formula = Text(
@@ -91,8 +91,8 @@ class DPOScene(NoMagicScene):
             font_size=18, color=NM_YELLOW,
         )
         formula.move_to(DOWN * 2.5)
-        self.play(Write(formula), run_time=0.7)
-        self.wait(0.3)
+        self.play(Write(formula), run_time=1.0)
+        self.wait(0.6)
 
         # === Step 4: Show reward margin growing ===
         margin_label = Text("reward margin", font_size=16, color=NM_TEXT)
@@ -103,7 +103,7 @@ class DPOScene(NoMagicScene):
             pref_bar.animate.stretch_to_fit_width(3.8),
             rej_bar.animate.stretch_to_fit_width(0.8),
             FadeIn(margin_label),
-            run_time=0.8,
+            run_time=1.2,
         )
 
         # Arrow showing the margin between the two
@@ -114,8 +114,8 @@ class DPOScene(NoMagicScene):
         )
         margin_val = Text("margin grows", font_size=14, color=NM_YELLOW)
         margin_val.next_to(margin_arrow, UP, buff=0.08)
-        self.play(GrowFromCenter(margin_arrow), FadeIn(margin_val), run_time=0.5)
-        self.wait(0.3)
+        self.play(GrowFromCenter(margin_arrow), FadeIn(margin_val), run_time=0.8)
+        self.wait(0.6)
 
         # === Step 5: Result summary ===
         result = VGroup(
@@ -127,9 +127,9 @@ class DPOScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(r, shift=LEFT * 0.2) for r in result], lag_ratio=0.15),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

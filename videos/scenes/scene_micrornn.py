@@ -20,7 +20,7 @@ class RNNScene(NoMagicScene):
         # === Step 1: Show vanilla RNN unrolled ===
         rnn_label = Text("Vanilla RNN", font_size=20, color=NM_BLUE, weight=BOLD)
         rnn_label.move_to(LEFT * 3.0 + UP * 2.8)
-        self.play(Write(rnn_label), run_time=0.3)
+        self.play(Write(rnn_label), run_time=0.4)
 
         n_steps = 5
         rnn_cells = VGroup()
@@ -48,13 +48,13 @@ class RNNScene(NoMagicScene):
         self.play(
             LaggedStart(*[FadeIn(c) for c in rnn_cells], lag_ratio=0.08),
             LaggedStart(*[GrowArrow(a) for a in rnn_arrows], lag_ratio=0.08),
-            run_time=0.6,
+            run_time=0.9,
         )
 
         # === Step 2: Show vanishing gradient ===
         grad_label = Text("Gradient signal", font_size=14, color=NM_PRIMARY)
         grad_label.next_to(rnn_cells, DOWN, buff=0.3)
-        self.play(FadeIn(grad_label), run_time=0.2)
+        self.play(FadeIn(grad_label), run_time=0.4)
 
         # Gradient bars shrinking from right to left
         grad_bars = VGroup()
@@ -70,18 +70,18 @@ class RNNScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(b, shift=UP * 0.1) for b in grad_bars], lag_ratio=0.08),
-            run_time=0.5,
+            run_time=0.8,
         )
 
         vanish_text = Text("gradients vanish \u2192 can't learn long dependencies", font_size=12, color=NM_PRIMARY)
         vanish_text.next_to(grad_bars, DOWN, buff=0.15)
-        self.play(FadeIn(vanish_text), run_time=0.2)
-        self.wait(0.3)
+        self.play(FadeIn(vanish_text), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 3: GRU with gates ===
         gru_label = Text("GRU (Gated Recurrent Unit)", font_size=20, color=NM_GREEN, weight=BOLD)
         gru_label.move_to(RIGHT * 3.0 + UP * 2.8)
-        self.play(Write(gru_label), run_time=0.3)
+        self.play(Write(gru_label), run_time=0.4)
 
         gru_cells = VGroup()
         gru_arrows = VGroup()
@@ -114,7 +114,7 @@ class RNNScene(NoMagicScene):
         self.play(
             LaggedStart(*[FadeIn(c) for c in gru_cells], lag_ratio=0.08),
             LaggedStart(*[GrowArrow(a) for a in gru_arrows], lag_ratio=0.08),
-            run_time=0.6,
+            run_time=0.9,
         )
 
         # GRU gradient bars — more preserved
@@ -135,9 +135,9 @@ class RNNScene(NoMagicScene):
         self.play(
             LaggedStart(*[FadeIn(b, shift=UP * 0.1) for b in gru_grad_bars], lag_ratio=0.08),
             FadeIn(gru_note),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: Gate explanation ===
         gate_explain = VGroup(
@@ -149,8 +149,8 @@ class RNNScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(g, shift=UP * 0.1) for g in gate_explain], lag_ratio=0.15),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

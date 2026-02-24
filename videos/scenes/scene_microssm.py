@@ -20,7 +20,7 @@ class SSMScene(NoMagicScene):
         # === Step 1: Show the SSM recurrence ===
         formula_label = Text("SSM Recurrence", font_size=20, color=NM_PRIMARY, weight=BOLD)
         formula_label.move_to(UP * 2.8)
-        self.play(Write(formula_label), run_time=0.3)
+        self.play(Write(formula_label), run_time=0.4)
 
         # State equation: h_t = A * h_{t-1} + B * x_t
         # Output equation: y_t = C * h_t
@@ -32,16 +32,16 @@ class SSMScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(e) for e in eqs], lag_ratio=0.2),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Animate the state transition step-by-step ===
-        self.play(FadeOut(eqs), FadeOut(formula_label), run_time=0.3)
+        self.play(FadeOut(eqs), FadeOut(formula_label), run_time=0.4)
 
         seq_label = Text("Sequential processing (5 timesteps)", font_size=16, color=NM_TEXT)
         seq_label.move_to(UP * 2.8)
-        self.play(Write(seq_label), run_time=0.3)
+        self.play(Write(seq_label), run_time=0.4)
 
         # Input tokens
         input_tokens = ["x\u2081", "x\u2082", "x\u2083", "x\u2084", "x\u2085"]
@@ -62,7 +62,7 @@ class SSMScene(NoMagicScene):
         self.play(
             FadeIn(input_label),
             LaggedStart(*[FadeIn(b, shift=DOWN * 0.1) for b in input_boxes], lag_ratio=0.08),
-            run_time=0.5,
+            run_time=0.8,
         )
 
         # Hidden state boxes
@@ -132,24 +132,24 @@ class SSMScene(NoMagicScene):
                 state_boxes[i][0].animate.set_fill(NM_GREEN, opacity=0.3),
             ])
 
-            self.play(*anims, run_time=0.35)
+            self.play(*anims, run_time=0.5)
 
             # Output
             self.play(
                 GrowArrow(out_arr),
                 FadeIn(output_boxes[i], shift=DOWN * 0.1),
-                run_time=0.2,
+                run_time=0.4,
             )
 
             # Dim previous state
             if i > 0:
                 self.play(
                     state_boxes[i - 1][0].animate.set_fill(NM_GREEN, opacity=0.1),
-                    run_time=0.1,
+                    run_time=0.4,
                 )
 
-        self.play(FadeIn(state_label), FadeIn(output_label), run_time=0.2)
-        self.wait(0.3)
+        self.play(FadeIn(state_label), FadeIn(output_label), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 3: Selective mechanism (Mamba's key contribution) ===
         selective_label = Text(
@@ -164,9 +164,9 @@ class SSMScene(NoMagicScene):
         )
         linear_label.move_to(DOWN * 3.3)
 
-        self.play(Write(selective_label), run_time=0.4)
-        self.play(FadeIn(linear_label, shift=UP * 0.15), run_time=0.3)
-        self.wait(0.8)
+        self.play(Write(selective_label), run_time=0.6)
+        self.play(FadeIn(linear_label, shift=UP * 0.15), run_time=0.4)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

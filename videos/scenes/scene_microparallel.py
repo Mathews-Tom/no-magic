@@ -35,22 +35,22 @@ class ParallelScene(NoMagicScene):
         no_fit = Text("does not fit", font_size=13, color=NM_PRIMARY)
         no_fit.next_to(model_label, DOWN, buff=0.1)
 
-        self.play(FadeIn(gpu_group), FadeIn(model_label), FadeIn(no_fit), run_time=0.4)
-        self.wait(0.2)
+        self.play(FadeIn(gpu_group), FadeIn(model_label), FadeIn(no_fit), run_time=0.6)
+        self.wait(0.4)
 
         self.play(
             FadeOut(gpu_group), FadeOut(model_label), FadeOut(no_fit),
-            run_time=0.2,
+            run_time=0.4,
         )
 
         # === Step 2: Tensor Parallelism ===
         tp_label = Text("Tensor Parallelism", font_size=20, color=NM_GREEN, weight=BOLD)
         tp_label.move_to(LEFT * 3.5 + UP * 2.5)
-        self.play(Write(tp_label), run_time=0.3)
+        self.play(Write(tp_label), run_time=0.4)
 
         tp_desc = Text("split weight matrices across GPUs", font_size=12, color=NM_GRID)
         tp_desc.next_to(tp_label, DOWN, buff=0.1)
-        self.play(FadeIn(tp_desc), run_time=0.2)
+        self.play(FadeIn(tp_desc), run_time=0.4)
 
         # Weight matrix split into 4 column slices
         full_matrix = VGroup()
@@ -75,19 +75,19 @@ class ParallelScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(c, shift=DOWN * 0.1) for c in full_matrix], lag_ratio=0.1),
-            run_time=0.4,
+            run_time=0.6,
         )
-        self.play(FadeIn(w_label), FadeIn(allreduce), run_time=0.2)
-        self.wait(0.2)
+        self.play(FadeIn(w_label), FadeIn(allreduce), run_time=0.4)
+        self.wait(0.4)
 
         # === Step 3: Pipeline Parallelism ===
         pp_label = Text("Pipeline Parallelism", font_size=20, color=NM_YELLOW, weight=BOLD)
         pp_label.move_to(RIGHT * 3.5 + UP * 2.5)
-        self.play(Write(pp_label), run_time=0.3)
+        self.play(Write(pp_label), run_time=0.4)
 
         pp_desc = Text("split layers across GPUs", font_size=12, color=NM_GRID)
         pp_desc.next_to(pp_label, DOWN, buff=0.1)
-        self.play(FadeIn(pp_desc), run_time=0.2)
+        self.play(FadeIn(pp_desc), run_time=0.4)
 
         # Pipeline stages
         stages = VGroup()
@@ -117,13 +117,13 @@ class ParallelScene(NoMagicScene):
         self.play(
             LaggedStart(*[FadeIn(s) for s in stages], lag_ratio=0.1),
             LaggedStart(*[GrowArrow(a) for a in stage_arrows], lag_ratio=0.1),
-            run_time=0.5,
+            run_time=0.8,
         )
 
         bubble_note = Text("micro-batches fill the pipeline bubble", font_size=11, color=NM_YELLOW)
         bubble_note.next_to(stages, RIGHT, buff=0.2)
-        self.play(FadeIn(bubble_note), run_time=0.2)
-        self.wait(0.2)
+        self.play(FadeIn(bubble_note), run_time=0.4)
+        self.wait(0.4)
 
         # === Step 4: Combined result ===
         result = VGroup(
@@ -135,8 +135,8 @@ class ParallelScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(r, shift=UP * 0.1) for r in result], lag_ratio=0.15),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)
