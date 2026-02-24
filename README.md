@@ -24,6 +24,124 @@
 
 Every script in this repository is an **executable proof** that these algorithms are simpler than the industry makes them seem. The goal is not to replace PyTorch or TensorFlow — it's to make you dangerous enough to understand what they're doing underneath.
 
+## See It In Action
+
+<table>
+<tr>
+<td align="center"><b>Attention Mechanism</b><br/>
+<img src="videos/previews/microattention.gif" width="280"/><br/>
+<sub>Q·K<sup>T</sup> → softmax → weighted V</sub></td>
+<td align="center"><b>Autoregressive GPT</b><br/>
+<img src="videos/previews/microgpt.gif" width="280"/><br/>
+<sub>Token-by-token generation</sub></td>
+<td align="center"><b>LoRA Fine-tuning</b><br/>
+<img src="videos/previews/microlora.gif" width="280"/><br/>
+<sub>Low-rank weight injection</sub></td>
+</tr>
+<tr>
+<td align="center"><b>Word Embeddings</b><br/>
+<img src="videos/previews/microembedding.gif" width="280"/><br/>
+<sub>Contrastive learning → semantic clusters</sub></td>
+<td align="center"><b>DPO Alignment</b><br/>
+<img src="videos/previews/microdpo.gif" width="280"/><br/>
+<sub>Preferred vs. rejected → policy update</sub></td>
+<td align="center"><b>RAG Pipeline</b><br/>
+<img src="videos/previews/microrag.gif" width="280"/><br/>
+<sub>Retrieve → augment → generate</sub></td>
+</tr>
+<tr>
+<td align="center"><b>Flash Attention</b><br/>
+<img src="videos/previews/microflash.gif" width="280"/><br/>
+<sub>Tiled O(N) memory computation</sub></td>
+<td align="center"><b>Quantization</b><br/>
+<img src="videos/previews/microquant.gif" width="280"/><br/>
+<sub>Float32 → Int8 = 4x compression</sub></td>
+<td align="center"><b>Mixture of Experts</b><br/>
+<img src="videos/previews/micromoe.gif" width="280"/><br/>
+<sub>Sparse routing to specialist MLPs</sub></td>
+</tr>
+<tr>
+<td align="center"><b>BPE Tokenizer</b><br/>
+<img src="videos/previews/microtokenizer.gif" width="280"/><br/>
+<sub>Iterative pair merging → vocabulary</sub></td>
+<td align="center"><b>BERT</b><br/>
+<img src="videos/previews/microbert.gif" width="280"/><br/>
+<sub>Bidirectional attention + [MASK] prediction</sub></td>
+<td align="center"><b>KV-Cache</b><br/>
+<img src="videos/previews/microkv.gif" width="280"/><br/>
+<sub>Memoize keys/values — stop recomputing</sub></td>
+</tr>
+<tr>
+<td align="center"><b>Beam Search</b><br/>
+<img src="videos/previews/microbeam.gif" width="280"/><br/>
+<sub>Tree search with top-k pruning</sub></td>
+<td align="center"><b>RoPE</b><br/>
+<img src="videos/previews/microrope.gif" width="280"/><br/>
+<sub>Position via rotation matrices</sub></td>
+<td align="center"><b>PPO (RLHF)</b><br/>
+<img src="videos/previews/microppo.gif" width="280"/><br/>
+<sub>Clipped policy gradient for alignment</sub></td>
+</tr>
+<tr>
+<td align="center"><b>State Space Models</b><br/>
+<img src="videos/previews/microssm.gif" width="280"/><br/>
+<sub>Linear-time selective state transitions</sub></td>
+<td align="center"><b>Convolutional Net</b><br/>
+<img src="videos/previews/microconv.gif" width="280"/><br/>
+<sub>Sliding kernels → feature maps</sub></td>
+<td align="center"><b>Diffusion</b><br/>
+<img src="videos/previews/microdiffusion.gif" width="280"/><br/>
+<sub>Noise → data via iterative denoising</sub></td>
+</tr>
+<tr>
+<td align="center"><b>GAN</b><br/>
+<img src="videos/previews/microgan.gif" width="280"/><br/>
+<sub>Generator vs discriminator minimax</sub></td>
+<td align="center"><b>VAE</b><br/>
+<img src="videos/previews/microvae.gif" width="280"/><br/>
+<sub>Encode → sample z → decode</sub></td>
+<td align="center"><b>RNN vs GRU</b><br/>
+<img src="videos/previews/micrornn.gif" width="280"/><br/>
+<sub>Vanishing gradients and gating</sub></td>
+</tr>
+<tr>
+<td align="center"><b>Optimizers</b><br/>
+<img src="videos/previews/microoptimizer.gif" width="280"/><br/>
+<sub>SGD vs Momentum vs Adam convergence</sub></td>
+<td align="center"><b>Batch Normalization</b><br/>
+<img src="videos/previews/microbatchnorm.gif" width="280"/><br/>
+<sub>Normalize activations → stable training</sub></td>
+<td align="center"><b>Dropout</b><br/>
+<img src="videos/previews/microdropout.gif" width="280"/><br/>
+<sub>Kill neurons → prevent overfitting</sub></td>
+</tr>
+<tr>
+<td align="center"><b>QLoRA</b><br/>
+<img src="videos/previews/microqlora.gif" width="280"/><br/>
+<sub>4-bit base + full-precision adapters</sub></td>
+<td align="center"><b>GRPO</b><br/>
+<img src="videos/previews/microgrpo.gif" width="280"/><br/>
+<sub>Group-relative rewards, no critic</sub></td>
+<td align="center"><b>REINFORCE</b><br/>
+<img src="videos/previews/microreinforce.gif" width="280"/><br/>
+<sub>Log P(a) × reward = gradient</sub></td>
+</tr>
+<tr>
+<td align="center"><b>Checkpointing</b><br/>
+<img src="videos/previews/microcheckpoint.gif" width="280"/><br/>
+<sub>O(n) → O(√n) memory via recompute</sub></td>
+<td align="center"><b>PagedAttention</b><br/>
+<img src="videos/previews/micropaged.gif" width="280"/><br/>
+<sub>OS-style paged KV-cache memory</sub></td>
+<td align="center"><b>Model Parallelism</b><br/>
+<img src="videos/previews/microparallel.gif" width="280"/><br/>
+<sub>Tensor + pipeline across devices</sub></td>
+</tr>
+</table>
+
+> All 30 algorithms have animated visualizations. Full 1080p60 videos in [Releases](https://github.com/Mathews-Tom/no-magic/releases).
+> Video source scenes in [`videos/scenes/`](videos/scenes/) — built with [Manim](https://www.manim.community/).
+
 ## Philosophy
 
 Modern ML education has a gap. There are thousands of tutorials that teach you to call library functions, and there are academic papers full of notation. What's missing is the middle layer: **the algorithm itself, expressed as readable code**.
@@ -91,7 +209,7 @@ That's it. No virtual environments, no dependency installation, no configuration
 
 If you're working through the scripts systematically, this subset builds core concepts incrementally:
 
-```plaintext
+```text
 microtokenizer.py     → How text becomes numbers
 microembedding.py     → How meaning becomes geometry
 microgpt.py           → How sequences become predictions

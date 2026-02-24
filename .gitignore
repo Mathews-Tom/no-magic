@@ -217,8 +217,15 @@ __marimo__/
 .docs/
 .sage/
 
+# macOS
+.DS_Store
+
 # Cached datasets (auto-downloaded by scripts on first run)
 names.txt
 *.data
 *.cache
 data/
+
+# Video rendering artifacts (Manim output)
+videos/renders/
+media/
