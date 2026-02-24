@@ -1,7 +1,7 @@
 name: Render Algorithm Videos
 
 on:
-  push:
+  pull_request:
     paths:
       - 'videos/scenes/**'
       - 'videos/render.sh'
@@ -10,24 +10,50 @@ on:
   workflow_dispatch:
     inputs:
       scene:
-        description: 'Single scene name to render (e.g., microattention), or leave empty for all'
+        description: 'Single scene name to render (e.g., microattention), or leave empty for all changed'
         required: false
         default: ''
-      quality:
-        description: 'Render mode'
-        required: false
-        default: 'all'
-        type: choice
-        options:
-          - all
-          - preview-only
-          - full-only
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      scenes: ${{ steps.changed.outputs.scenes }}
+      has_scenes: ${{ steps.changed.outputs.has_scenes }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed scene files
+        id: changed
+        run: |
+          if [ -n "${{ github.event.inputs.scene }}" ]; then
+            # Manual dispatch: use the specified scene
+            echo "scenes=[\"${{ github.event.inputs.scene }}\"]" >> "$GITHUB_OUTPUT"
+            echo "has_scenes=true" >> "$GITHUB_OUTPUT"
+          else
+            # PR trigger: find scene files changed vs base branch
+            BASE="${{ github.event.pull_request.base.sha }}"
+            HEAD="${{ github.sha }}"
+            CHANGED=$(git diff --name-only "$BASE" "$HEAD" -- 'videos/scenes/scene_*.py' \
+              | sed 's|videos/scenes/scene_||;s|\.py||' \
+              | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            echo "scenes=$CHANGED" >> "$GITHUB_OUTPUT"
+            if [ "$CHANGED" = "[]" ] || [ -z "$CHANGED" ]; then
+              echo "has_scenes=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "has_scenes=true" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
   render:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_scenes == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -43,65 +69,22 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcairo2-dev libpango1.0-dev ffmpeg gifsicle
+          sudo apt-get install -y libcairo2-dev libpango1.0-dev ffmpeg
 
       - name: Install Manim
         run: pip install -r videos/requirements.txt
 
-      - name: Render scenes
+      - name: Render changed scenes (full MP4 only)
         run: |
-          ARGS=""
-          if [ "${{ github.event.inputs.quality }}" = "preview-only" ]; then
-            ARGS="--preview-only"
-          elif [ "${{ github.event.inputs.quality }}" = "full-only" ]; then
-            ARGS="--full-only"
-          fi
-          if [ -n "${{ github.event.inputs.scene }}" ]; then
-            ARGS="$ARGS ${{ github.event.inputs.scene }}"
-          fi
-          bash videos/render.sh $ARGS
-
-      - name: Commit updated GIF previews
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add videos/previews/*.gif
-          if git diff --cached --quiet; then
-            echo "No GIF changes to commit"
-          else
-            git commit -m "ci(videos): update GIF previews [skip ci]"
-            git push
-          fi
+          SCENES='${{ needs.detect-changes.outputs.scenes }}'
+          for scene in $(echo "$SCENES" | jq -r '.[]'); do
+            echo "=== Rendering: $scene ==="
+            bash videos/render.sh --full-only "$scene"
+          done
 
       - name: Upload MP4 renders as artifacts
-        if: ${{ github.event.inputs.quality != 'preview-only' }}
         uses: actions/upload-artifact@v4
         with:
           name: algorithm-videos
           path: videos/renders/*.mp4
           retention-days: 30
-
-  release:
-    needs: render
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download rendered videos
-        uses: actions/download-artifact@v4
-        with:
-          name: algorithm-videos
-          path: videos/
-
-      - name: Create GitHub Release with videos
-        uses: softprops/action-gh-release@v2
-        with:
-          files: videos/*.mp4
-          body: |
-            ## Algorithm Visualization Videos
-
-            Short animated explanations of the algorithms in no-magic, generated with [Manim](https://www.manim.community/).
-
-            Download individual MP4s below, or view GIF previews in the [README](https://github.com/Mathews-Tom/no-magic#see-it-in-action).
