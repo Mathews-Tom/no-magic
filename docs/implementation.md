@@ -10,7 +10,7 @@ This project is inspired by Andrej Karpathy's [micrograd](https://github.com/kar
 
 ## Repository Structure
 
-```plaintext
+```text
 no-magic/
 ├── README.md
 ├── CONTRIBUTING.md

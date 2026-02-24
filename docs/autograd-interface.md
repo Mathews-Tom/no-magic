@@ -76,17 +76,17 @@ Scripts that need additional operations beyond the base set must:
 
 ### Known Extensions by Script
 
-| Script           | Additional Operations | Why Needed                                     |
-| ---------------- | --------------------- | ---------------------------------------------- |
-| `microgpt.py`    | (none beyond base)    | Reference implementation of canonical interface |
-| `micrornn.py`    | `sigmoid()`           | GRU gating: `z_t = sigmoid(...)`               |
-| `microlora.py`   | (none beyond base)    | Uses base set                                  |
-| `microdpo.py`    | (none beyond base)    | `log()` is in the base set                     |
-| `microppo.py`    | `clip()`              | PPO ratio clipping                             |
-| `micromoe.py`    | (router only)         | Router uses base set; experts are plain floats |
-| `microkv.py`     | (none beyond base)    | Compact Value class for training only          |
-| `microquant.py`  | (none beyond base)    | Autograd for training; quantization uses floats |
-| `microbeam.py`   | (none beyond base)    | Autograd for training; decoding uses floats    |
+| Script          | Additional Operations | Why Needed                                      |
+| --------------- | --------------------- | ----------------------------------------------- |
+| `microgpt.py`   | (none beyond base)    | Reference implementation of canonical interface |
+| `micrornn.py`   | `sigmoid()`           | GRU gating: `z_t = sigmoid(...)`                |
+| `microlora.py`  | (none beyond base)    | Uses base set                                   |
+| `microdpo.py`   | (none beyond base)    | `log()` is in the base set                      |
+| `microppo.py`   | `clip()`              | PPO ratio clipping                              |
+| `micromoe.py`   | (router only)         | Router uses base set; experts are plain floats  |
+| `microkv.py`    | (none beyond base)    | Compact Value class for training only           |
+| `microquant.py` | (none beyond base)    | Autograd for training; quantization uses floats |
+| `microbeam.py`  | (none beyond base)    | Autograd for training; decoding uses floats     |
 
 ### Autograd Callout Pattern
 
