@@ -48,12 +48,12 @@ class RAGScene(NoMagicScene):
         doc_boxes.arrange_in_grid(rows=3, cols=2, buff=0.2)
         doc_boxes.move_to(LEFT * 4.5 + DOWN * 0.2)
 
-        self.play(Write(kb_label), run_time=0.3)
+        self.play(Write(kb_label), run_time=0.4)
         self.play(
             LaggedStart(*[FadeIn(d, shift=UP * 0.15) for d in doc_boxes], lag_ratio=0.08),
-            run_time=0.7,
+            run_time=1.0,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Show the query ===
         query_box = RoundedRectangle(
@@ -66,8 +66,8 @@ class RAGScene(NoMagicScene):
         query_text.move_to(query_box.get_center())
         query_label.next_to(query_box, UP, buff=0.1)
 
-        self.play(FadeIn(query_box), Write(query_text), Write(query_label), run_time=0.6)
-        self.wait(0.3)
+        self.play(FadeIn(query_box), Write(query_text), Write(query_label), run_time=0.9)
+        self.wait(0.6)
 
         # === Step 3: BM25 retrieval — search arrow + highlight matches ===
         retrieve_label = Text("BM25 search", font_size=16, color=NM_PRIMARY, weight=BOLD)
@@ -77,7 +77,7 @@ class RAGScene(NoMagicScene):
             query_box.get_left(), doc_boxes.get_right() + RIGHT * 0.1,
             color=NM_PRIMARY, stroke_width=2, buff=0.15,
         )
-        self.play(GrowArrow(search_arrow), Write(retrieve_label), run_time=0.5)
+        self.play(GrowArrow(search_arrow), Write(retrieve_label), run_time=0.8)
 
         # Highlight top-K matches (Paris doc is the match)
         match_idx = 0  # "Paris is in France"
@@ -92,8 +92,8 @@ class RAGScene(NoMagicScene):
         highlight2 = SurroundingRectangle(match2_box, color=NM_GREEN, buff=0.05, stroke_width=1.5)
         highlight2.set_stroke(opacity=0.5)
 
-        self.play(Create(highlight), FadeIn(score_label), Create(highlight2), run_time=0.6)
-        self.wait(0.4)
+        self.play(Create(highlight), FadeIn(score_label), Create(highlight2), run_time=0.9)
+        self.wait(0.8)
 
         # === Step 4: Context augmentation ===
         # Show retrieved doc flowing into the generation context
@@ -124,9 +124,9 @@ class RAGScene(NoMagicScene):
             GrowArrow(inject_arrow),
             FadeIn(context_box), Write(context_header),
             FadeIn(context_content),
-            run_time=0.8,
+            run_time=1.2,
         )
-        self.wait(0.4)
+        self.wait(0.8)
 
         # === Step 5: Generation ===
         gen_label = Text("Generate", font_size=18, color=NM_PURPLE, weight=BOLD)
@@ -146,12 +146,12 @@ class RAGScene(NoMagicScene):
             color=NM_PURPLE, stroke_width=2, buff=0.15,
         )
 
-        self.play(Write(gen_label), GrowArrow(gen_arrow), run_time=0.4)
-        self.play(FadeIn(gen_box), Write(gen_text), run_time=0.5)
+        self.play(Write(gen_label), GrowArrow(gen_arrow), run_time=0.6)
+        self.play(FadeIn(gen_box), Write(gen_text), run_time=0.8)
 
         # Flash the answer
-        self.play(Indicate(gen_box, color=NM_GREEN, scale_factor=1.05), run_time=0.4)
-        self.wait(0.8)
+        self.play(Indicate(gen_box, color=NM_GREEN, scale_factor=1.05), run_time=0.6)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

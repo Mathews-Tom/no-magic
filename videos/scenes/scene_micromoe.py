@@ -61,9 +61,9 @@ class MoEScene(NoMagicScene):
         self.play(
             FadeIn(tokens_label),
             LaggedStart(*[FadeIn(t, shift=DOWN * 0.2) for t in tokens], lag_ratio=0.1),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Show the router gate ===
         router = RoundedRectangle(
@@ -86,9 +86,9 @@ class MoEScene(NoMagicScene):
         self.play(
             FadeIn(router), Write(router_label),
             LaggedStart(*[GrowArrow(a) for a in token_arrows], lag_ratio=0.05),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 3: Show 4 expert MLPs ===
         expert_colors = [NM_GREEN, NM_BLUE, NM_ORANGE, NM_PURPLE]
@@ -103,14 +103,14 @@ class MoEScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(e, shift=UP * 0.2) for e in experts], lag_ratio=0.1),
-            run_time=0.7,
+            run_time=1.0,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: Show routing scores (softmax output) ===
         scores_label = Text("top-K = 2 per token", font_size=16, color=NM_PRIMARY)
         scores_label.next_to(router, RIGHT, buff=0.3)
-        self.play(Write(scores_label), run_time=0.3)
+        self.play(Write(scores_label), run_time=0.4)
 
         # Route assignments: each token goes to 2 experts
         # token "t" → Expert 1, Expert 3
@@ -145,7 +145,7 @@ class MoEScene(NoMagicScene):
             self.play(
                 Indicate(tok, color=NM_YELLOW, scale_factor=1.15),
                 *[GrowArrow(a) for a in route_arrows],
-                run_time=0.4,
+                run_time=0.6,
             )
 
             # Flash the selected experts
@@ -154,16 +154,16 @@ class MoEScene(NoMagicScene):
                 flash_anims.append(
                     experts[ei][1].animate.set_fill(expert_colors[ei], opacity=0.35)
                 )
-            self.play(*flash_anims, run_time=0.2)
+            self.play(*flash_anims, run_time=0.4)
 
             # Dim back
             dim_anims = [
                 experts[ei][1].animate.set_fill(expert_colors[ei], opacity=0.1)
                 for ei in expert_indices
             ]
-            self.play(*dim_anims, FadeOut(route_arrows), run_time=0.2)
+            self.play(*dim_anims, FadeOut(route_arrows), run_time=0.4)
 
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 5: Show output combination ===
         output_label = Text("weighted sum of expert outputs", font_size=16, color=NM_GREEN)
@@ -175,9 +175,9 @@ class MoEScene(NoMagicScene):
         )
         result.move_to(DOWN * 3.3)
 
-        self.play(Write(output_label), run_time=0.4)
-        self.play(FadeIn(result, shift=UP * 0.15), run_time=0.4)
-        self.wait(0.8)
+        self.play(Write(output_label), run_time=0.6)
+        self.play(FadeIn(result, shift=UP * 0.15), run_time=0.6)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

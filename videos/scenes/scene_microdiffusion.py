@@ -24,7 +24,7 @@ class DiffusionScene(NoMagicScene):
         # === Step 1: Show the forward process (data → noise) ===
         forward_label = Text("Forward: add noise at each step", font_size=18, color=NM_PRIMARY, weight=BOLD)
         forward_label.move_to(UP * 2.8)
-        self.play(Write(forward_label), run_time=0.3)
+        self.play(Write(forward_label), run_time=0.4)
 
         n_points = 30
         n_steps = 5
@@ -84,19 +84,19 @@ class DiffusionScene(NoMagicScene):
         self.play(
             LaggedStart(*[FadeIn(g) for g in step_groups], lag_ratio=0.12),
             LaggedStart(*[GrowArrow(a) for a in arrows], lag_ratio=0.1),
-            run_time=1.0,
+            run_time=1.5,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Show reverse process (denoise step-by-step) ===
         self.play(
             FadeOut(forward_label), FadeOut(step_groups), FadeOut(arrows),
-            run_time=0.3,
+            run_time=0.4,
         )
 
         reverse_label = Text("Reverse: learned denoising (predict noise, subtract)", font_size=18, color=NM_GREEN, weight=BOLD)
         reverse_label.move_to(UP * 2.8)
-        self.play(Write(reverse_label), run_time=0.3)
+        self.play(Write(reverse_label), run_time=0.4)
 
         # Animate a single denoising trajectory in the center
         random.seed(42)
@@ -110,8 +110,8 @@ class DiffusionScene(NoMagicScene):
 
         noise_label = Text("pure noise", font_size=14, color=NM_PRIMARY)
         noise_label.move_to(DOWN * 1.8)
-        self.play(FadeIn(current_dots), FadeIn(noise_label), run_time=0.3)
-        self.wait(0.2)
+        self.play(FadeIn(current_dots), FadeIn(noise_label), run_time=0.4)
+        self.wait(0.4)
 
         denoise_steps = 4
         for step in range(denoise_steps):
@@ -137,9 +137,9 @@ class DiffusionScene(NoMagicScene):
             self.play(
                 Transform(current_dots, new_dots),
                 Transform(noise_label, step_text),
-                run_time=0.4,
+                run_time=0.6,
             )
-            self.wait(0.15)
+            self.wait(0.4)
 
         # === Step 3: Result ===
         result = Text(
@@ -147,7 +147,7 @@ class DiffusionScene(NoMagicScene):
             font_size=16, color=NM_YELLOW, weight=BOLD,
         )
         result.move_to(DOWN * 2.5)
-        self.play(FadeIn(result, shift=UP * 0.15), run_time=0.4)
-        self.wait(0.8)
+        self.play(FadeIn(result, shift=UP * 0.15), run_time=0.6)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

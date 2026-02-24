@@ -20,7 +20,7 @@ class KVCacheScene(NoMagicScene):
         # === Step 1: Without cache — recompute everything each step ===
         no_cache_label = Text("Without KV-Cache", font_size=20, color=NM_PRIMARY, weight=BOLD)
         no_cache_label.move_to(LEFT * 3.5 + UP * 2.8)
-        self.play(Write(no_cache_label), run_time=0.3)
+        self.play(Write(no_cache_label), run_time=0.4)
 
         tokens_left = ["h", "e", "l", "l", "o"]
         cell_w, cell_h = 0.5, 0.4
@@ -47,16 +47,16 @@ class KVCacheScene(NoMagicScene):
                 recomp_bracket = Brace(VGroup(*row[:step]), DOWN, color=NM_PRIMARY, buff=0.05)
                 recomp_text = Text("recomputed", font_size=10, color=NM_PRIMARY)
                 recomp_text.next_to(recomp_bracket, DOWN, buff=0.05)
-                self.play(FadeIn(row), FadeIn(recomp_bracket), FadeIn(recomp_text), run_time=0.3)
+                self.play(FadeIn(row), FadeIn(recomp_bracket), FadeIn(recomp_text), run_time=0.4)
             else:
-                self.play(FadeIn(row), run_time=0.3)
+                self.play(FadeIn(row), run_time=0.4)
 
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: With cache — only compute new token's K,V ===
         cache_label = Text("With KV-Cache", font_size=20, color=NM_GREEN, weight=BOLD)
         cache_label.move_to(RIGHT * 3.5 + UP * 2.8)
-        self.play(Write(cache_label), run_time=0.3)
+        self.play(Write(cache_label), run_time=0.4)
 
         # Show the cache growing incrementally
         cache_box = RoundedRectangle(
@@ -67,7 +67,7 @@ class KVCacheScene(NoMagicScene):
         cache_title = Text("K,V Cache", font_size=14, color=NM_GREEN)
         cache_title.next_to(cache_box, UP, buff=0.1)
 
-        self.play(FadeIn(cache_box), FadeIn(cache_title), run_time=0.3)
+        self.play(FadeIn(cache_box), FadeIn(cache_title), run_time=0.4)
 
         cache_rows = VGroup()
         for step in range(5):
@@ -103,13 +103,13 @@ class KVCacheScene(NoMagicScene):
         for i, row in enumerate(cache_rows):
             new_label = Text("new", font_size=10, color=NM_YELLOW, weight=BOLD)
             new_label.next_to(row, RIGHT, buff=0.15)
-            self.play(FadeIn(row, shift=LEFT * 0.2), FadeIn(new_label), run_time=0.25)
+            self.play(FadeIn(row, shift=LEFT * 0.2), FadeIn(new_label), run_time=0.4)
             if i < len(cache_rows) - 1:
-                self.play(FadeOut(new_label), run_time=0.1)
+                self.play(FadeOut(new_label), run_time=0.4)
             else:
-                self.play(FadeOut(new_label), run_time=0.1)
+                self.play(FadeOut(new_label), run_time=0.4)
 
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 3: Comparison summary ===
         comparison = VGroup(
@@ -121,9 +121,9 @@ class KVCacheScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(c, shift=UP * 0.15) for c in comparison], lag_ratio=0.15),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

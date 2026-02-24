@@ -20,7 +20,7 @@ class DropoutScene(NoMagicScene):
         # === Step 1: Show a simple neural network ===
         net_label = Text("Training (with dropout)", font_size=20, color=NM_PRIMARY, weight=BOLD)
         net_label.move_to(UP * 2.8)
-        self.play(Write(net_label), run_time=0.3)
+        self.play(Write(net_label), run_time=0.4)
 
         layers = [4, 6, 6, 3]
         neuron_radius = 0.15
@@ -55,13 +55,13 @@ class DropoutScene(NoMagicScene):
                     )
                     connections.add(line)
 
-        self.play(FadeIn(connections), FadeIn(all_neuron_dots), run_time=0.5)
-        self.wait(0.2)
+        self.play(FadeIn(connections), FadeIn(all_neuron_dots), run_time=0.8)
+        self.wait(0.4)
 
         # === Step 2: Animate dropout — randomly deactivate neurons ===
         dropout_label = Text("p = 0.5 (drop 50%)", font_size=16, color=NM_PRIMARY)
         dropout_label.move_to(DOWN * 2.5)
-        self.play(Write(dropout_label), run_time=0.2)
+        self.play(Write(dropout_label), run_time=0.4)
 
         import random
         random.seed(42)
@@ -97,31 +97,31 @@ class DropoutScene(NoMagicScene):
                 )
                 x_marks.add(x1, x2)
 
-            self.play(*drop_anims, FadeIn(x_marks), run_time=0.3)
-            self.wait(0.2)
+            self.play(*drop_anims, FadeIn(x_marks), run_time=0.4)
+            self.wait(0.4)
 
             # Reset
             reset_anims = [
                 neuron.animate.set_fill(NM_BLUE, opacity=0.3).set_stroke(NM_BLUE)
                 for neuron in dropped
             ]
-            self.play(*reset_anims, FadeOut(x_marks), run_time=0.2)
+            self.play(*reset_anims, FadeOut(x_marks), run_time=0.4)
 
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 3: Inference (no dropout) ===
-        self.play(FadeOut(net_label), FadeOut(dropout_label), run_time=0.2)
+        self.play(FadeOut(net_label), FadeOut(dropout_label), run_time=0.4)
 
         infer_label = Text("Inference (all neurons active, scaled)", font_size=20, color=NM_GREEN, weight=BOLD)
         infer_label.move_to(UP * 2.8)
-        self.play(Write(infer_label), run_time=0.3)
+        self.play(Write(infer_label), run_time=0.4)
 
         # All neurons green
         all_green = [
             neuron.animate.set_fill(NM_GREEN, opacity=0.4).set_stroke(NM_GREEN)
             for layer in all_neurons for neuron in layer
         ]
-        self.play(*all_green, run_time=0.4)
+        self.play(*all_green, run_time=0.6)
 
         # === Step 4: Result ===
         result = VGroup(
@@ -132,8 +132,8 @@ class DropoutScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(r, shift=UP * 0.15) for r in result], lag_ratio=0.2),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

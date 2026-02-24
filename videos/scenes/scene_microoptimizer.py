@@ -20,7 +20,7 @@ class OptimizerScene(NoMagicScene):
         # === Step 1: Show a stylized loss landscape ===
         landscape_label = Text("Loss Landscape", font_size=20, color=NM_TEXT, weight=BOLD)
         landscape_label.move_to(UP * 2.8)
-        self.play(Write(landscape_label), run_time=0.3)
+        self.play(Write(landscape_label), run_time=0.4)
 
         # Draw contour-like ellipses (narrow valley)
         contours = VGroup()
@@ -42,9 +42,9 @@ class OptimizerScene(NoMagicScene):
         self.play(
             LaggedStart(*[Create(c) for c in contours], lag_ratio=0.08),
             FadeIn(minimum), FadeIn(min_label),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 2: Animate 4 optimizer paths ===
         optimizers = [
@@ -95,17 +95,17 @@ class OptimizerScene(NoMagicScene):
 
         legend_items.arrange(DOWN, buff=0.12, aligned_edge=LEFT)
         legend_items.move_to(RIGHT * 5.0 + UP * 1.5)
-        self.play(FadeIn(legend_items), run_time=0.3)
+        self.play(FadeIn(legend_items), run_time=0.4)
 
         # Animate paths simultaneously
         for dots, lines in paths:
             self.play(
                 LaggedStart(*[FadeIn(d, scale=0.5) for d in dots], lag_ratio=0.08),
                 LaggedStart(*[Create(l) for l in lines], lag_ratio=0.08),
-                run_time=0.5,
+                run_time=0.8,
             )
 
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 3: Summary ===
         summary = VGroup(
@@ -117,8 +117,8 @@ class OptimizerScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(s, shift=UP * 0.1) for s in summary], lag_ratio=0.15),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

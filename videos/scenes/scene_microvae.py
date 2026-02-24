@@ -64,9 +64,9 @@ class VAEScene(NoMagicScene):
             FadeIn(latent_group),
             FadeIn(dec_group, shift=LEFT * 0.2),
             GrowArrow(enc_to_lat), GrowArrow(lat_to_dec),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Show mu and sigma outputs from encoder ===
         mu_box = RoundedRectangle(
@@ -87,12 +87,12 @@ class VAEScene(NoMagicScene):
         sigma_group = VGroup(sigma_box, sigma_label)
         sigma_group.move_to(LEFT * 1.8 + DOWN * 0.3)
 
-        self.play(FadeIn(mu_group), FadeIn(sigma_group), run_time=0.3)
+        self.play(FadeIn(mu_group), FadeIn(sigma_group), run_time=0.4)
 
         # === Step 3: Reparameterization trick ===
         reparam_label = Text("Reparameterization Trick", font_size=18, color=NM_PRIMARY, weight=BOLD)
         reparam_label.move_to(DOWN * 1.5)
-        self.play(Write(reparam_label), run_time=0.3)
+        self.play(Write(reparam_label), run_time=0.4)
 
         trick_formula = VGroup(
             Text("\u03b5 ~ N(0, 1)", font_size=15, color=NM_ORANGE),
@@ -112,23 +112,23 @@ class VAEScene(NoMagicScene):
 
         self.play(
             FadeIn(eps_dot), FadeIn(eps_label), GrowArrow(eps_arrow),
-            run_time=0.3,
+            run_time=0.4,
         )
         self.play(
             LaggedStart(*[FadeIn(f) for f in trick_formula], lag_ratio=0.2),
-            run_time=0.5,
+            run_time=0.8,
         )
 
         # Pulse the latent z
         self.play(
             latent.animate.set_fill(NM_YELLOW, opacity=0.25),
-            run_time=0.2,
+            run_time=0.4,
         )
         self.play(
             latent.animate.set_fill(NM_YELLOW, opacity=0.08),
-            run_time=0.2,
+            run_time=0.4,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: Loss components ===
         loss = VGroup(
@@ -137,7 +137,7 @@ class VAEScene(NoMagicScene):
         ).arrange(DOWN, buff=0.08)
         loss.move_to(DOWN * 3.5)
 
-        self.play(FadeIn(loss, shift=UP * 0.15), run_time=0.4)
-        self.wait(0.8)
+        self.play(FadeIn(loss, shift=UP * 0.15), run_time=0.6)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

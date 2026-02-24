@@ -47,20 +47,20 @@ class BERTScene(NoMagicScene):
                     )
                     causal_arrows.add(arr)
 
-        self.play(Write(causal_label), run_time=0.3)
+        self.play(Write(causal_label), run_time=0.4)
         self.play(
             LaggedStart(*[FadeIn(b, shift=DOWN * 0.1) for b in causal_boxes], lag_ratio=0.08),
-            run_time=0.4,
+            run_time=0.6,
         )
         self.play(
             LaggedStart(*[GrowArrow(a) for a in causal_arrows], lag_ratio=0.03),
-            run_time=0.5,
+            run_time=0.8,
         )
 
         causal_note = Text("each token sees only the left", font_size=13, color=NM_ORANGE)
         causal_note.next_to(causal_boxes, DOWN, buff=0.5)
-        self.play(FadeIn(causal_note), run_time=0.2)
-        self.wait(0.3)
+        self.play(FadeIn(causal_note), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 2: Show BERT-style bidirectional attention ===
         bert_label = Text("BERT: Bidirectional", font_size=20, color=NM_GREEN, weight=BOLD)
@@ -94,20 +94,20 @@ class BERTScene(NoMagicScene):
                     )
                     bert_arrows.add(arr)
 
-        self.play(Write(bert_label), run_time=0.3)
+        self.play(Write(bert_label), run_time=0.4)
         self.play(
             LaggedStart(*[FadeIn(b, shift=DOWN * 0.1) for b in bert_boxes], lag_ratio=0.08),
-            run_time=0.4,
+            run_time=0.6,
         )
         self.play(
             LaggedStart(*[GrowArrow(a) for a in bert_arrows], lag_ratio=0.02),
-            run_time=0.5,
+            run_time=0.8,
         )
 
         bert_note = Text("every token sees everything", font_size=13, color=NM_GREEN)
         bert_note.next_to(bert_boxes, DOWN, buff=0.5)
-        self.play(FadeIn(bert_note), run_time=0.2)
-        self.wait(0.4)
+        self.play(FadeIn(bert_note), run_time=0.4)
+        self.wait(0.8)
 
         # === Step 3: Show the masked prediction task ===
         # Clear side-by-side, move to center for the BERT prediction demo
@@ -116,12 +116,12 @@ class BERTScene(NoMagicScene):
                 causal_label, causal_boxes, causal_arrows, causal_note,
                 bert_label, bert_boxes, bert_arrows, bert_note,
             ]],
-            run_time=0.4,
+            run_time=0.6,
         )
 
         mlm_label = Text("Masked Language Modeling", font_size=22, color=NM_PRIMARY, weight=BOLD)
         mlm_label.move_to(UP * 2.5)
-        self.play(Write(mlm_label), run_time=0.3)
+        self.play(Write(mlm_label), run_time=0.4)
 
         # Input sequence with mask
         input_tokens = ["T", "h", "[MASK]", "m", "a", "s"]
@@ -144,7 +144,7 @@ class BERTScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(b, shift=DOWN * 0.15) for b in input_boxes], lag_ratio=0.06),
-            run_time=0.5,
+            run_time=0.8,
         )
 
         # Show bidirectional context arrows converging on [MASK]
@@ -166,9 +166,9 @@ class BERTScene(NoMagicScene):
         self.play(
             LaggedStart(*[GrowArrow(a) for a in context_arrows], lag_ratio=0.06),
             FadeIn(context_label),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: Prediction ===
         prediction = Text("o", font_size=28, color=NM_GREEN, weight=BOLD)
@@ -182,7 +182,7 @@ class BERTScene(NoMagicScene):
         self.play(
             FadeOut(input_boxes[mask_idx]),
             FadeIn(pred_box), FadeIn(prediction),
-            run_time=0.4,
+            run_time=0.6,
         )
 
         result = Text(
@@ -190,8 +190,8 @@ class BERTScene(NoMagicScene):
             font_size=16, color=NM_YELLOW, weight=BOLD,
         )
         result.move_to(DOWN * 2.0)
-        self.play(FadeIn(result, shift=UP * 0.15), run_time=0.4)
-        self.wait(0.8)
+        self.play(FadeIn(result, shift=UP * 0.15), run_time=0.6)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

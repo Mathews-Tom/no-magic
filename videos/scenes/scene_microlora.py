@@ -43,8 +43,8 @@ class LoRAScene(NoMagicScene):
         w_dims = Text(f"{w_rows}×{w_cols}", font_size=16, color=NM_TEXT)
         w_dims.next_to(w_grid, DOWN, buff=0.15)
 
-        self.play(FadeIn(w_grid, shift=UP * 0.2), Write(w_label), FadeIn(w_dims), run_time=0.7)
-        self.wait(0.3)
+        self.play(FadeIn(w_grid, shift=UP * 0.2), Write(w_label), FadeIn(w_dims), run_time=1.0)
+        self.wait(0.6)
 
         # === Step 2: Freeze it — overlay a lock icon (snowflake) and dim ===
         freeze_label = Text("frozen", font_size=18, color=NM_TEXT, slant=ITALIC)
@@ -52,13 +52,13 @@ class LoRAScene(NoMagicScene):
 
         # Dim all cells to show "frozen"
         freeze_anims = [cell.animate.set_fill(NM_BLUE, opacity=0.15) for cell in w_grid]
-        self.play(*freeze_anims, FadeIn(freeze_label), run_time=0.6)
+        self.play(*freeze_anims, FadeIn(freeze_label), run_time=0.9)
 
         # Add a subtle border to emphasize frozen state
         freeze_box = SurroundingRectangle(w_grid, color=NM_BLUE, buff=0.08, stroke_width=1.5)
         freeze_box.set_stroke(opacity=0.5)
-        self.play(Create(freeze_box), run_time=0.3)
-        self.wait(0.3)
+        self.play(Create(freeze_box), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 3: Introduce LoRA matrices A and B ===
         # A: (d × r) — tall and thin
@@ -90,14 +90,14 @@ class LoRAScene(NoMagicScene):
             Write(a_label), Write(b_label),
             FadeIn(a_dims), FadeIn(b_dims),
             FadeIn(trainable_label),
-            run_time=0.8,
+            run_time=1.2,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: Show the multiplication A · B ===
         mult_sign = Text("·", font_size=36, color=NM_TEXT)
         mult_sign.move_to(RIGHT * 2.0 + DOWN * 0.15)
-        self.play(Write(mult_sign), run_time=0.3)
+        self.play(Write(mult_sign), run_time=0.4)
 
         # Arrow from A·B to W — the "injection"
         ab_group = VGroup(a_grid, b_grid, mult_sign)
@@ -109,30 +109,30 @@ class LoRAScene(NoMagicScene):
         plus_label = Text("+", font_size=30, color=NM_YELLOW, weight=BOLD)
         plus_label.next_to(inject_arrow, UP, buff=0.1)
 
-        self.play(GrowArrow(inject_arrow), Write(plus_label), run_time=0.5)
-        self.wait(0.3)
+        self.play(GrowArrow(inject_arrow), Write(plus_label), run_time=0.8)
+        self.wait(0.6)
 
         # === Step 5: Show the effective weight W' = W + A·B ===
         formula = Text("W' = W + A·B", font_size=24, color=NM_YELLOW, weight=BOLD)
         formula.to_edge(DOWN, buff=0.6)
-        self.play(Write(formula), run_time=0.6)
-        self.wait(0.3)
+        self.play(Write(formula), run_time=0.9)
+        self.wait(0.6)
 
         # === Step 6: Animate training — A and B cells pulse ===
         # Show gradient flowing through A and B (cells brighten)
         train_label = Text("training...", font_size=18, color=NM_GREEN)
         train_label.next_to(trainable_label, DOWN, buff=0.2)
-        self.play(FadeIn(train_label), run_time=0.3)
+        self.play(FadeIn(train_label), run_time=0.4)
 
         for _ in range(2):
             a_pulse = [cell.animate.set_fill(NM_PRIMARY, opacity=0.8) for cell in a_grid]
             b_pulse = [cell.animate.set_fill(NM_GREEN, opacity=0.8) for cell in b_grid]
-            self.play(*a_pulse, *b_pulse, run_time=0.3)
+            self.play(*a_pulse, *b_pulse, run_time=0.4)
             a_dim = [cell.animate.set_fill(NM_PRIMARY, opacity=0.5) for cell in a_grid]
             b_dim = [cell.animate.set_fill(NM_GREEN, opacity=0.5) for cell in b_grid]
-            self.play(*a_dim, *b_dim, run_time=0.3)
+            self.play(*a_dim, *b_dim, run_time=0.4)
 
-        self.play(FadeOut(train_label), run_time=0.2)
+        self.play(FadeOut(train_label), run_time=0.4)
 
         # === Step 7: Parameter count comparison ===
         param_text = VGroup(
@@ -144,9 +144,9 @@ class LoRAScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(t, shift=LEFT * 0.2) for t in param_text], lag_ratio=0.2),
-            run_time=0.7,
+            run_time=1.0,
         )
-        self.wait(1.0)
+        self.wait(2.0)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

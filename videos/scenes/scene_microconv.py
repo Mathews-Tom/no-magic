@@ -47,8 +47,8 @@ class ConvScene(NoMagicScene):
                 row.append(sq)
             input_grid.append(row)
 
-        self.play(Write(input_label), FadeIn(input_cells), run_time=0.5)
-        self.wait(0.2)
+        self.play(Write(input_label), FadeIn(input_cells), run_time=0.8)
+        self.wait(0.4)
 
         # === Step 2: Show the 3x3 kernel ===
         kernel_label = Text("3\u00d73 Kernel", font_size=16, color=NM_YELLOW, weight=BOLD)
@@ -75,8 +75,8 @@ class ConvScene(NoMagicScene):
         kernel_cells.arrange_in_grid(rows=3, cols=3, buff=0)
         kernel_cells.move_to(UP * 1.2)
 
-        self.play(Write(kernel_label), FadeIn(kernel_cells), run_time=0.4)
-        self.wait(0.2)
+        self.play(Write(kernel_label), FadeIn(kernel_cells), run_time=0.6)
+        self.wait(0.4)
 
         # === Step 3: Animate kernel sliding over input ===
         output_size = grid_size - kernel_size + 1  # 4x4
@@ -98,7 +98,7 @@ class ConvScene(NoMagicScene):
                 )
                 output_cells.add(sq)
 
-        self.play(Write(output_label), FadeIn(output_cells), run_time=0.3)
+        self.play(Write(output_label), FadeIn(output_cells), run_time=0.4)
 
         # Sliding window highlight
         highlight = Rectangle(
@@ -112,15 +112,15 @@ class ConvScene(NoMagicScene):
             target = input_grid[r + 1][c + 1].get_center()
             if idx == 0:
                 highlight.move_to(target)
-                self.play(FadeIn(highlight), run_time=0.2)
+                self.play(FadeIn(highlight), run_time=0.4)
             else:
-                self.play(highlight.animate.move_to(target), run_time=0.3)
+                self.play(highlight.animate.move_to(target), run_time=0.4)
 
             # Light up corresponding output cell
             out_idx = r * output_size + c
             self.play(
                 output_cells[out_idx].animate.set_fill(NM_GREEN, opacity=0.5),
-                run_time=0.15,
+                run_time=0.4,
             )
 
         # Fill remaining output cells
@@ -129,14 +129,14 @@ class ConvScene(NoMagicScene):
         self.play(
             *[output_cells[i].animate.set_fill(NM_GREEN, opacity=0.35) for i in remaining],
             FadeOut(highlight),
-            run_time=0.4,
+            run_time=0.6,
         )
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 4: Pooling ===
         pool_label = Text("Max Pooling 2\u00d72 \u2192 2\u00d72 output", font_size=16, color=NM_PURPLE)
         pool_label.move_to(DOWN * 2.2)
-        self.play(Write(pool_label), run_time=0.3)
+        self.play(Write(pool_label), run_time=0.4)
 
         # Show pooled result
         pooled = VGroup()
@@ -150,11 +150,11 @@ class ConvScene(NoMagicScene):
         pooled.arrange_in_grid(rows=2, cols=2, buff=0.05)
         pooled.move_to(DOWN * 3.0)
 
-        self.play(FadeIn(pooled, shift=UP * 0.15), run_time=0.3)
+        self.play(FadeIn(pooled, shift=UP * 0.15), run_time=0.4)
 
         result = Text("translation invariance + spatial hierarchy", font_size=14, color=NM_YELLOW, weight=BOLD)
         result.next_to(pooled, RIGHT, buff=0.4)
-        self.play(FadeIn(result), run_time=0.3)
-        self.wait(0.8)
+        self.play(FadeIn(result), run_time=0.4)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

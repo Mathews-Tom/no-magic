@@ -22,7 +22,7 @@ class CheckpointScene(NoMagicScene):
         # === Step 1: Standard backprop — all activations stored ===
         std_label = Text("Standard Backprop", font_size=18, color=NM_PRIMARY, weight=BOLD)
         std_label.move_to(LEFT * 3.5 + UP * 2.5)
-        self.play(Write(std_label), run_time=0.3)
+        self.play(Write(std_label), run_time=0.4)
 
         std_cells = VGroup()
         for i in range(n_layers):
@@ -42,15 +42,15 @@ class CheckpointScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(c) for c in std_cells], lag_ratio=0.06),
-            run_time=0.4,
+            run_time=0.6,
         )
-        self.play(FadeIn(mem_label), run_time=0.2)
-        self.wait(0.2)
+        self.play(FadeIn(mem_label), run_time=0.4)
+        self.wait(0.4)
 
         # === Step 2: Checkpointed — only sqrt(n) stored ===
         ckpt_label = Text("Checkpointed", font_size=18, color=NM_GREEN, weight=BOLD)
         ckpt_label.move_to(RIGHT * 3.5 + UP * 2.5)
-        self.play(Write(ckpt_label), run_time=0.3)
+        self.play(Write(ckpt_label), run_time=0.4)
 
         # checkpoint every 2 layers (sqrt(8) ≈ 2.8)
         ckpt_cells = VGroup()
@@ -79,15 +79,15 @@ class CheckpointScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(c) for c in ckpt_cells], lag_ratio=0.06),
-            run_time=0.4,
+            run_time=0.6,
         )
-        self.play(FadeIn(ckpt_mem), run_time=0.2)
-        self.wait(0.2)
+        self.play(FadeIn(ckpt_mem), run_time=0.4)
+        self.wait(0.4)
 
         # === Step 3: Animate recomputation during backward ===
         recomp_label = Text("Backward Pass: Recompute Between Checkpoints", font_size=16, color=NM_YELLOW, weight=BOLD)
         recomp_label.move_to(DOWN * 0.8)
-        self.play(Write(recomp_label), run_time=0.3)
+        self.play(Write(recomp_label), run_time=0.4)
 
         # Highlight a segment being recomputed
         highlight = SurroundingRectangle(
@@ -97,19 +97,19 @@ class CheckpointScene(NoMagicScene):
         recomp_text = Text("recompute a3→a4→a5", font_size=11, color=NM_ORANGE)
         recomp_text.next_to(highlight, UP, buff=0.1)
 
-        self.play(Create(highlight), FadeIn(recomp_text), run_time=0.3)
+        self.play(Create(highlight), FadeIn(recomp_text), run_time=0.4)
 
         # Flash the recomputed cells
         for idx in [3, 4, 5]:
             self.play(
                 ckpt_cells[idx][0].animate.set_fill(NM_ORANGE, opacity=0.3),
-                run_time=0.15,
+                run_time=0.4,
             )
             self.play(
                 ckpt_cells[idx][0].animate.set_fill(NM_GREEN if idx % 3 == 0 else NM_GRID, opacity=0.3 if idx % 3 == 0 else 0.05),
-                run_time=0.1,
+                run_time=0.4,
             )
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 4: Trade-off summary ===
         tradeoff = VGroup(
@@ -121,8 +121,8 @@ class CheckpointScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(t, shift=UP * 0.1) for t in tradeoff], lag_ratio=0.15),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

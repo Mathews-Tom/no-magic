@@ -75,26 +75,26 @@ class EmbeddingScene(NoMagicScene):
         # Show sparse feature space label
         sparse_label = Text("raw text — no structure", font_size=20, color=NM_TEXT)
         sparse_label.to_edge(UP, buff=0.5)
-        self.play(Write(sparse_label), run_time=0.4)
+        self.play(Write(sparse_label), run_time=0.6)
 
         # Scatter words onto canvas
         all_dots = [FadeIn(dots[w], scale=0.5) for w in words]
         all_labels = [FadeIn(labels[w]) for w in words]
-        self.play(LaggedStart(*all_dots, lag_ratio=0.05), run_time=0.8)
-        self.play(LaggedStart(*all_labels, lag_ratio=0.05), run_time=0.6)
-        self.wait(0.5)
+        self.play(LaggedStart(*all_dots, lag_ratio=0.05), run_time=1.2)
+        self.play(LaggedStart(*all_labels, lag_ratio=0.05), run_time=0.9)
+        self.wait(1.0)
 
         # === Step 2: Show n-gram extraction ===
         ngram_label = Text("extract n-grams → contrastive loss", font_size=20, color=NM_YELLOW)
         ngram_label.to_edge(UP, buff=0.5)
-        self.play(ReplacementTransform(sparse_label, ngram_label), run_time=0.5)
-        self.wait(0.4)
+        self.play(ReplacementTransform(sparse_label, ngram_label), run_time=0.8)
+        self.wait(0.8)
 
         # === Step 3: Training — dots migrate to clusters ===
         training_label = Text("training: similar names attract, dissimilar repel",
                               font_size=18, color=NM_PRIMARY)
         training_label.to_edge(DOWN, buff=0.5)
-        self.play(FadeIn(training_label), run_time=0.4)
+        self.play(FadeIn(training_label), run_time=0.6)
 
         # Animate movement to clustered positions
         move_anims = []
@@ -105,13 +105,13 @@ class EmbeddingScene(NoMagicScene):
             new_label_pos = [target[0], target[1] - 0.25, 0]
             label_anims.append(labels[w].animate.move_to(new_label_pos))
 
-        self.play(*move_anims, *label_anims, run_time=2.0, rate_func=smooth)
-        self.wait(0.5)
+        self.play(*move_anims, *label_anims, run_time=3.0, rate_func=smooth)
+        self.wait(1.0)
 
         # === Step 4: Show cluster boundaries ===
         embed_label = Text("embedding space — distance = similarity", font_size=20, color=NM_GREEN)
         embed_label.to_edge(UP, buff=0.5)
-        self.play(ReplacementTransform(ngram_label, embed_label), run_time=0.5)
+        self.play(ReplacementTransform(ngram_label, embed_label), run_time=0.8)
 
         # Draw dashed circles around clusters
         circles = []
@@ -130,9 +130,9 @@ class EmbeddingScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(c) for c in circles], lag_ratio=0.15),
-            run_time=0.8,
+            run_time=1.2,
         )
-        self.wait(0.5)
+        self.wait(1.0)
 
         # === Step 5: Show cosine similarity measurement ===
         # Draw a line between "anna" and "anne" with similarity score
@@ -143,8 +143,8 @@ class EmbeddingScene(NoMagicScene):
         sim_score = Text("cos = 0.94", font_size=14, color=NM_YELLOW)
         sim_score.next_to(sim_line, UP, buff=0.08)
 
-        self.play(Create(sim_line), FadeIn(sim_score), run_time=0.5)
-        self.wait(0.8)
+        self.play(Create(sim_line), FadeIn(sim_score), run_time=0.8)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

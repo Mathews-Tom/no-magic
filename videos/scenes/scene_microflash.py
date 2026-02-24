@@ -43,20 +43,20 @@ class FlashAttentionScene(NoMagicScene):
         mem_label = Text("O(N²) memory", font_size=16, color=NM_PRIMARY)
         mem_label.next_to(std_cells, DOWN, buff=0.25)
 
-        self.play(Write(std_label), run_time=0.3)
-        self.play(FadeIn(std_cells), run_time=0.5)
-        self.play(Write(mem_label), run_time=0.3)
+        self.play(Write(std_label), run_time=0.4)
+        self.play(FadeIn(std_cells), run_time=0.8)
+        self.play(Write(mem_label), run_time=0.4)
 
         # Highlight all cells simultaneously to show full materialization
         self.play(
             *[cell.animate.set_fill(NM_PRIMARY, opacity=0.6) for cell in std_cells],
-            run_time=0.5,
+            run_time=0.8,
         )
         self.play(
             *[cell.animate.set_fill(NM_PRIMARY, opacity=0.3) for cell in std_cells],
-            run_time=0.3,
+            run_time=0.4,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Show Flash Attention tiled grid ===
         flash_label = Text("Flash Attention", font_size=22, color=NM_GREEN, weight=BOLD)
@@ -97,10 +97,10 @@ class FlashAttentionScene(NoMagicScene):
         flash_mem = Text("O(N) memory", font_size=16, color=NM_GREEN)
         flash_mem.next_to(flash_cells, DOWN, buff=0.25)
 
-        self.play(Write(flash_label), run_time=0.3)
-        self.play(FadeIn(flash_cells), FadeIn(tile_borders), run_time=0.5)
-        self.play(Write(flash_mem), run_time=0.3)
-        self.wait(0.3)
+        self.play(Write(flash_label), run_time=0.4)
+        self.play(FadeIn(flash_cells), FadeIn(tile_borders), run_time=0.8)
+        self.play(Write(flash_mem), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 3: Animate tile-by-tile processing ===
         sram_label = Text("SRAM (fast memory)", font_size=14, color=NM_YELLOW)
@@ -111,7 +111,7 @@ class FlashAttentionScene(NoMagicScene):
             color=NM_YELLOW, fill_opacity=0.08, stroke_width=1.5,
         )
         sram_box.next_to(sram_label, DOWN, buff=0.15)
-        self.play(FadeIn(sram_label), FadeIn(sram_box), run_time=0.3)
+        self.play(FadeIn(sram_label), FadeIn(sram_box), run_time=0.4)
 
         # Process tiles sequentially: light up one tile at a time
         tile_order = [(0, 0), (0, 1), (1, 0), (1, 1)]
@@ -125,24 +125,24 @@ class FlashAttentionScene(NoMagicScene):
             self.play(
                 *[cell.animate.set_fill(color, opacity=0.6) for cell in cells],
                 sram_box.animate.set_fill(color, opacity=0.2),
-                run_time=0.35,
+                run_time=0.5,
             )
 
             # Show tile label
             tile_id = Text(f"tile ({br},{bc})", font_size=12, color=color)
             tile_id.move_to(sram_box.get_center())
-            self.play(FadeIn(tile_id), run_time=0.2)
-            self.wait(0.15)
+            self.play(FadeIn(tile_id), run_time=0.4)
+            self.wait(0.4)
 
             # Dim tile (processed) and clear SRAM label
             self.play(
                 *[cell.animate.set_fill(NM_GREEN, opacity=0.35) for cell in cells],
                 sram_box.animate.set_fill(NM_YELLOW, opacity=0.05),
                 FadeOut(tile_id),
-                run_time=0.25,
+                run_time=0.4,
             )
 
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 4: Result comparison ===
         result_text = VGroup(
@@ -153,9 +153,9 @@ class FlashAttentionScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(t, shift=UP * 0.2) for t in result_text], lag_ratio=0.2),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
         # Cleanup
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

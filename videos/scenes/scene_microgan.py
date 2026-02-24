@@ -51,9 +51,9 @@ class GANScene(NoMagicScene):
         self.play(
             FadeIn(gen_group, shift=RIGHT * 0.2),
             FadeIn(disc_group, shift=LEFT * 0.2),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.play(GrowArrow(gen_to_disc), FadeIn(arrow_label), run_time=0.3)
+        self.play(GrowArrow(gen_to_disc), FadeIn(arrow_label), run_time=0.4)
 
         # Real data arrow into discriminator
         real_arrow = Arrow(
@@ -62,13 +62,13 @@ class GANScene(NoMagicScene):
         )
         real_label = Text("real data", font_size=12, color=NM_BLUE)
         real_label.next_to(real_arrow, LEFT, buff=0.1)
-        self.play(GrowArrow(real_arrow), FadeIn(real_label), run_time=0.3)
-        self.wait(0.3)
+        self.play(GrowArrow(real_arrow), FadeIn(real_label), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 2: Training loop — adversarial rounds ===
         round_label = Text("Adversarial training rounds", font_size=16, color=NM_TEXT)
         round_label.move_to(DOWN * 0.8)
-        self.play(Write(round_label), run_time=0.2)
+        self.play(Write(round_label), run_time=0.4)
 
         for i in range(3):
             # Discriminator trains (gets better at detecting fakes)
@@ -77,9 +77,9 @@ class GANScene(NoMagicScene):
             self.play(
                 FadeIn(d_update),
                 disc_box.animate.set_fill(NM_PRIMARY, opacity=0.25),
-                run_time=0.3,
+                run_time=0.4,
             )
-            self.play(disc_box.animate.set_fill(NM_PRIMARY, opacity=0.12), run_time=0.15)
+            self.play(disc_box.animate.set_fill(NM_PRIMARY, opacity=0.12), run_time=0.4)
 
             # Generator trains (gets better at fooling)
             g_update = Text(f"Round {i+1}: G learns to fool D", font_size=13, color=NM_GREEN)
@@ -88,18 +88,18 @@ class GANScene(NoMagicScene):
                 FadeOut(d_update),
                 FadeIn(g_update),
                 gen_box.animate.set_fill(NM_GREEN, opacity=0.25),
-                run_time=0.3,
+                run_time=0.4,
             )
             self.play(
                 gen_box.animate.set_fill(NM_GREEN, opacity=0.12),
                 FadeOut(g_update),
-                run_time=0.15,
+                run_time=0.4,
             )
 
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 3: Equilibrium — D can't tell the difference ===
-        self.play(FadeOut(round_label), run_time=0.15)
+        self.play(FadeOut(round_label), run_time=0.4)
 
         equil = VGroup(
             Text("Equilibrium: D(fake) \u2248 0.5", font_size=18, color=NM_YELLOW, weight=BOLD),
@@ -110,8 +110,8 @@ class GANScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(e, shift=UP * 0.15) for e in equil], lag_ratio=0.2),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

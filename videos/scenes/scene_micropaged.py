@@ -20,7 +20,7 @@ class PagedScene(NoMagicScene):
         # === Step 1: Show contiguous allocation problem ===
         contig_label = Text("Contiguous Allocation", font_size=18, color=NM_PRIMARY, weight=BOLD)
         contig_label.move_to(LEFT * 3.5 + UP * 2.5)
-        self.play(Write(contig_label), run_time=0.3)
+        self.play(Write(contig_label), run_time=0.4)
 
         # Memory bar with 3 requests — fragmented
         mem_bar = VGroup()
@@ -49,15 +49,15 @@ class PagedScene(NoMagicScene):
         self.play(
             LaggedStart(*[FadeIn(b) for b in mem_bar], lag_ratio=0.1),
             FadeIn(waste), FadeIn(waste_label),
-            run_time=0.4,
+            run_time=0.6,
         )
-        self.play(FadeIn(waste_note), run_time=0.2)
-        self.wait(0.2)
+        self.play(FadeIn(waste_note), run_time=0.4)
+        self.wait(0.4)
 
         # === Step 2: Paged allocation ===
         paged_label = Text("PagedAttention", font_size=18, color=NM_GREEN, weight=BOLD)
         paged_label.move_to(RIGHT * 3.5 + UP * 2.5)
-        self.play(Write(paged_label), run_time=0.3)
+        self.play(Write(paged_label), run_time=0.4)
 
         # Physical memory blocks — 4x4 grid of pages
         page_grid = VGroup()
@@ -95,23 +95,23 @@ class PagedScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(p) for p in page_grid], lag_ratio=0.03),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.play(FadeIn(page_note), FadeIn(block_table_label), run_time=0.3)
-        self.wait(0.2)
+        self.play(FadeIn(page_note), FadeIn(block_table_label), run_time=0.4)
+        self.wait(0.4)
 
         # === Step 3: Dynamic growth — new token arrives ===
         grow_label = Text("New token → allocate next free page", font_size=16, color=NM_YELLOW, weight=BOLD)
         grow_label.move_to(DOWN * 1.5)
-        self.play(Write(grow_label), run_time=0.3)
+        self.play(Write(grow_label), run_time=0.4)
 
         # Highlight an empty page being claimed
         target_page = page_grid[6]  # first empty page
         self.play(
             target_page.animate.set_fill(NM_BLUE, opacity=0.25).set_stroke(NM_BLUE, width=1.5),
-            run_time=0.3,
+            run_time=0.4,
         )
-        self.wait(0.2)
+        self.wait(0.4)
 
         # === Step 4: Benefits ===
         benefits = VGroup(
@@ -123,8 +123,8 @@ class PagedScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(b, shift=UP * 0.1) for b in benefits], lag_ratio=0.15),
-            run_time=0.5,
+            run_time=0.8,
         )
-        self.wait(0.8)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)

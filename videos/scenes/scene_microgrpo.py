@@ -61,19 +61,19 @@ class GRPOScene(NoMagicScene):
         self.play(
             Write(ppo_label), FadeIn(ppo_models),
             Write(grpo_label), FadeIn(grpo_models), FadeIn(no_value_group),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.3)
+        self.wait(0.6)
 
         # === Step 2: Show group-based reward normalization ===
         self.play(
             *[FadeOut(m) for m in [ppo_label, ppo_models, grpo_label, grpo_models, no_value_group]],
-            run_time=0.3,
+            run_time=0.4,
         )
 
         group_label = Text("Group-Relative Advantage", font_size=20, color=NM_GREEN, weight=BOLD)
         group_label.move_to(UP * 2.5)
-        self.play(Write(group_label), run_time=0.3)
+        self.play(Write(group_label), run_time=0.4)
 
         # Generate a group of completions
         completions = [
@@ -103,9 +103,9 @@ class GRPOScene(NoMagicScene):
 
         self.play(
             LaggedStart(*[FadeIn(c, shift=RIGHT * 0.2) for c in comp_items], lag_ratio=0.08),
-            run_time=0.6,
+            run_time=0.9,
         )
-        self.wait(0.2)
+        self.wait(0.4)
 
         # Show group mean and normalization
         mean_val = sum(r for _, r, _ in completions) / len(completions)
@@ -117,7 +117,7 @@ class GRPOScene(NoMagicScene):
         mean_label = Text(f"group mean = {mean_val:.2f}", font_size=13, color=NM_PRIMARY)
         mean_label.next_to(mean_line, RIGHT, buff=0.2)
 
-        self.play(Create(mean_line), FadeIn(mean_label), run_time=0.3)
+        self.play(Create(mean_line), FadeIn(mean_label), run_time=0.4)
 
         # Show normalized advantages
         adv_label = Text("Advantage = (reward - mean) / std", font_size=15, color=NM_YELLOW, weight=BOLD)
@@ -129,9 +129,9 @@ class GRPOScene(NoMagicScene):
         )
         insight.move_to(DOWN * 2.3)
 
-        self.play(Write(adv_label), run_time=0.3)
-        self.play(FadeIn(insight, shift=UP * 0.15), run_time=0.3)
-        self.wait(0.3)
+        self.play(Write(adv_label), run_time=0.4)
+        self.play(FadeIn(insight, shift=UP * 0.15), run_time=0.4)
+        self.wait(0.6)
 
         # === Step 3: Result ===
         result = Text(
@@ -139,7 +139,7 @@ class GRPOScene(NoMagicScene):
             font_size=16, color=NM_YELLOW, weight=BOLD,
         )
         result.move_to(DOWN * 3.2)
-        self.play(FadeIn(result, shift=UP * 0.15), run_time=0.4)
-        self.wait(0.8)
+        self.play(FadeIn(result, shift=UP * 0.15), run_time=0.6)
+        self.wait(1.6)
 
-        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.6)
+        self.play(*[FadeOut(mob) for mob in self.mobjects], run_time=0.9)
