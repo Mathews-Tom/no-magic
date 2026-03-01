@@ -1,4 +1,4 @@
-![no-magic](./assets/banner.png)
+[![no-magic](./assets/banner.png)](https://github.com/Mathews-Tom/no-magic)
 
 ---
 
