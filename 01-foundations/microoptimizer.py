@@ -508,7 +508,17 @@ def cosine_schedule(step: int, num_steps: int) -> float:
 
 # === COMPARISON AND RESULTS ===
 
-if __name__ == "__main__":
+
+def run_optimizer_comparison(
+    sgd_lr: float, momentum_lr: float, rmsprop_lr: float,
+    adam_lr: float, cosine_lr: float, num_steps: int,
+) -> None:
+    """Run all optimizers with the given learning rates and step count."""
+    global VOCAB_SIZE, NUM_STEPS, COSINE_LR
+
+    NUM_STEPS = num_steps
+    COSINE_LR = cosine_lr
+
     # -- Load and prepare data --
     print("Loading data...")
     docs = load_data(DATA_URL, DATA_FILE)
@@ -528,7 +538,7 @@ if __name__ == "__main__":
     # Pre-generate mini-batches so all optimizers see the same data in the same order.
     # This eliminates data ordering as a confound — any performance difference is
     # purely due to the optimizer.
-    num_batches = (NUM_STEPS // 1) + 1
+    num_batches = (num_steps // 1) + 1
     batches: list[list[list[int]]] = []
     for b in range(num_batches):
         start = (b * BATCH_SIZE) % len(tokenized)
@@ -541,15 +551,15 @@ if __name__ == "__main__":
 
     param_count = sum(len(row) for matrix in base_params for row in matrix)
     print(f"Model parameters: {param_count:,}")
-    print(f"Training: {NUM_STEPS} steps, batch size {BATCH_SIZE}\n")
+    print(f"Training: {num_steps} steps, batch size {BATCH_SIZE}\n")
 
     # -- Train with each optimizer --
     optimizers = [
-        ("SGD",             step_sgd,      SGD_LR,      None),
-        ("SGD + Momentum",  step_momentum, MOMENTUM_LR, None),
-        ("RMSProp",         step_rmsprop,  RMSPROP_LR,  None),
-        ("Adam",            step_adam,      ADAM_LR,     None),
-        ("Adam + Schedule", step_adam,      COSINE_LR,   cosine_schedule),
+        ("SGD",             step_sgd,      sgd_lr,      None),
+        ("SGD + Momentum",  step_momentum, momentum_lr, None),
+        ("RMSProp",         step_rmsprop,  rmsprop_lr,  None),
+        ("Adam",            step_adam,      adam_lr,     None),
+        ("Adam + Schedule", step_adam,      cosine_lr,   cosine_schedule),
     ]
 
     results: list[tuple[str, list[float], float]] = []
@@ -562,7 +572,7 @@ if __name__ == "__main__":
         params_copy = clone_params(base_params)
 
         loss_history, elapsed = train_optimizer(
-            name, step_fn, lr, params_copy, batches, NUM_STEPS,
+            name, step_fn, lr, params_copy, batches, num_steps,
             lr_schedule_fn=schedule_fn,
         )
         results.append((name, loss_history, elapsed))
@@ -612,11 +622,11 @@ if __name__ == "__main__":
     best_param_list = flatten_params(best_params)
     adam_state: dict = {}
 
-    for step in range(NUM_STEPS):
+    for step in range(num_steps):
         batch = batches[step % len(batches)]
         loss = bigram_loss(best_params, batch)
         loss.backward()
-        lr_val = cosine_schedule(step, NUM_STEPS)
+        lr_val = cosine_schedule(step, num_steps)
         step_adam(best_param_list, lr_val, adam_state)
 
     # Generate 10 names via autoregressive sampling
@@ -649,3 +659,82 @@ if __name__ == "__main__":
             generated.append(unique_chars[token_id])
 
         print(f"  {sample_idx + 1:>2}. {''.join(generated)}")
+
+
+# === INTERACTIVE MODE ===
+# Optional functionality: allows parameter exploration without editing the script.
+# Activated only via --interactive flag; default behavior is unchanged.
+
+import argparse
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Optimizer comparison: SGD, Momentum, RMSProp, Adam head-to-head"
+    )
+    parser.add_argument(
+        "--interactive", action="store_true",
+        help="Enter interactive mode to modify learning rates and re-run comparison"
+    )
+    return parser.parse_args()
+
+
+def interactive_loop() -> None:
+    """Interactive parameter exploration mode."""
+    print("\n=== INTERACTIVE MODE ===")
+    print("Modify optimizer learning rates and training steps, then re-run.")
+    print("Type 'quit' to exit.\n")
+
+    params = {
+        'sgd_lr': SGD_LR,
+        'momentum_lr': MOMENTUM_LR,
+        'rmsprop_lr': RMSPROP_LR,
+        'adam_lr': ADAM_LR,
+        'cosine_lr': COSINE_LR,
+        'num_steps': NUM_STEPS,
+    }
+
+    while True:
+        print("Current parameters:")
+        for k, v in params.items():
+            print(f"  {k} = {v}")
+
+        user_input = input(
+            "\nParameter to change (or 'run' to execute, 'quit' to exit): "
+        ).strip().lower()
+
+        if user_input == 'quit':
+            break
+        elif user_input == 'run':
+            run_optimizer_comparison(
+                params['sgd_lr'], params['momentum_lr'], params['rmsprop_lr'],
+                params['adam_lr'], params['cosine_lr'], params['num_steps']
+            )
+        elif '=' in user_input:
+            key, _, val = user_input.partition('=')
+            key = key.strip()
+            val = val.strip()
+            if key not in params:
+                print(f"Unknown parameter: {key}")
+                print(f"Available: {', '.join(params)}")
+                continue
+            try:
+                if key == 'num_steps':
+                    params[key] = int(val)
+                else:
+                    params[key] = float(val)
+            except ValueError:
+                print(f"Invalid value: {val}")
+        else:
+            print("Enter 'parameter=value', 'run', or 'quit'.")
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    if args.interactive:
+        interactive_loop()
+    else:
+        # === DEFAULT BEHAVIOR (unchanged) ===
+        run_optimizer_comparison(
+            SGD_LR, MOMENTUM_LR, RMSPROP_LR, ADAM_LR, COSINE_LR, NUM_STEPS
+        )

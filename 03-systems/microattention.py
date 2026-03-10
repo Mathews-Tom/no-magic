@@ -272,25 +272,32 @@ def compute_analysis(
 
 # === MAIN: RUN ALL VARIANTS AND COMPARE ===
 
-if __name__ == "__main__":
-    print("=== Attention Variants Comparison ===\n")
-    print(f"Config: seq_len={SEQ_LEN}, d_model={D_MODEL}, n_heads={N_HEADS}, "
-          f"head_dim={HEAD_DIM}, n_kv_heads_gqa={N_KV_HEADS_GQA}, "
-          f"window_size={WINDOW_SIZE}\n")
 
-    x = rand_matrix(SEQ_LEN, D_MODEL)
-    w_q = rand_matrix(D_MODEL, D_MODEL)
-    w_k = rand_matrix(D_MODEL, D_MODEL)
-    w_v = rand_matrix(D_MODEL, D_MODEL)
-    w_o = rand_matrix(D_MODEL, D_MODEL)
+def run_attention_comparison(
+    seq_len: int, d_model: int, n_heads: int, n_kv_heads_gqa: int, window_size: int
+) -> None:
+    """Run all attention variants with the given parameters and print comparison."""
+    head_dim = d_model // n_heads
+
+    print("=== Attention Variants Comparison ===\n")
+    print(f"Config: seq_len={seq_len}, d_model={d_model}, n_heads={n_heads}, "
+          f"head_dim={head_dim}, n_kv_heads_gqa={n_kv_heads_gqa}, "
+          f"window_size={window_size}\n")
+
+    random.seed(42)
+    x = rand_matrix(seq_len, d_model)
+    w_q = rand_matrix(d_model, d_model)
+    w_k = rand_matrix(d_model, d_model)
+    w_v = rand_matrix(d_model, d_model)
+    w_o = rand_matrix(d_model, d_model)
 
     # Derive reduced KV weights by averaging MHA head groups (Ainslie et al. 2023).
     # This mirrors how GQA models are initialized from MHA checkpoints, ensuring
     # GQA/MQA outputs approximate MHA rather than being unrelated random projections.
-    w_k_gqa = avg_head_weights(w_k, HEAD_DIM, N_HEADS, N_KV_HEADS_GQA)
-    w_v_gqa = avg_head_weights(w_v, HEAD_DIM, N_HEADS, N_KV_HEADS_GQA)
-    w_k_mqa = avg_head_weights(w_k, HEAD_DIM, N_HEADS, 1)
-    w_v_mqa = avg_head_weights(w_v, HEAD_DIM, N_HEADS, 1)
+    w_k_gqa = avg_head_weights(w_k, head_dim, n_heads, n_kv_heads_gqa)
+    w_v_gqa = avg_head_weights(w_v, head_dim, n_heads, n_kv_heads_gqa)
+    w_k_mqa = avg_head_weights(w_k, head_dim, n_heads, 1)
+    w_v_mqa = avg_head_weights(w_v, head_dim, n_heads, 1)
 
     results: dict[str, tuple[list[list[float]], float]] = {}
 
@@ -300,21 +307,21 @@ if __name__ == "__main__":
         results[name] = (out, (time.time() - t0) * 1000)
 
     run("Vanilla (single-head)", vanilla_attention, x, x, x)
-    run(f"Multi-Head ({N_HEADS} heads)",
-        multi_head_attention, x, w_q, w_k, w_v, w_o, N_HEADS)
-    run(f"GQA ({N_HEADS}q, {N_KV_HEADS_GQA}kv heads)",
+    run(f"Multi-Head ({n_heads} heads)",
+        multi_head_attention, x, w_q, w_k, w_v, w_o, n_heads)
+    run(f"GQA ({n_heads}q, {n_kv_heads_gqa}kv heads)",
         grouped_query_attention, x, w_q, w_k_gqa, w_v_gqa, w_o,
-        N_HEADS, N_KV_HEADS_GQA)
-    run(f"MQA ({N_HEADS}q, 1kv head)",
-        multi_query_attention, x, w_q, w_k_mqa, w_v_mqa, w_o, N_HEADS)
+        n_heads, n_kv_heads_gqa)
+    run(f"MQA ({n_heads}q, 1kv head)",
+        multi_query_attention, x, w_q, w_k_mqa, w_v_mqa, w_o, n_heads)
 
     # Sliding window: project with full MHA weights, then restrict attention to
     # a local window. This isolates the windowing effect from projection differences.
     q_p, k_p, v_p = matmul(x, w_q), matmul(x, w_k), matmul(x, w_v)
     t0 = time.time()
-    sw = sliding_window_attention(q_p, k_p, v_p, WINDOW_SIZE)
+    sw = sliding_window_attention(q_p, k_p, v_p, window_size)
     sw_out = matmul(sw, w_o)
-    results[f"Sliding Window (w={WINDOW_SIZE})"] = (sw_out, (time.time() - t0) * 1000)
+    results[f"Sliding Window (w={window_size})"] = (sw_out, (time.time() - t0) * 1000)
 
     # Validate: no NaN or Inf in any output
     all_valid = True
@@ -327,13 +334,13 @@ if __name__ == "__main__":
 
     # Cosine similarity to MHA -- measures how much information each variant
     # preserves relative to full multi-head attention
-    mha_key = f"Multi-Head ({N_HEADS} heads)"
+    mha_key = f"Multi-Head ({n_heads} heads)"
     mha_flat = flatten(results[mha_key][0])
     sims = {n: cosine_sim(flatten(o), mha_flat) for n, (o, _) in results.items()}
 
     # Analytical cost model
-    analysis = compute_analysis(SEQ_LEN, D_MODEL, N_HEADS, HEAD_DIM,
-                                N_KV_HEADS_GQA, WINDOW_SIZE)
+    analysis = compute_analysis(seq_len, d_model, n_heads, head_dim,
+                                n_kv_heads_gqa, window_size)
 
     # --- Print comparison table ---
     hdr = (f"{'Variant':<28} {'FLOPs':>12} {'Memory':>10} "
@@ -349,13 +356,96 @@ if __name__ == "__main__":
     print("\n=== Key Takeaways ===\n")
     print("1. MHA and vanilla share attention FLOPs (4*n^2*d). MHA adds projection")
     print("   cost (8*n*d^2) but gains multiple learned attention patterns.")
-    print(f"2. GQA cuts KV memory {N_HEADS // N_KV_HEADS_GQA}x "
-          f"({N_HEADS}->{N_KV_HEADS_GQA} KV heads), output stays close to MHA.")
-    print(f"3. MQA cuts KV memory {N_HEADS}x ({N_HEADS}->1 KV head) -- max savings,")
+    print(f"2. GQA cuts KV memory {n_heads // n_kv_heads_gqa}x "
+          f"({n_heads}->{n_kv_heads_gqa} KV heads), output stays close to MHA.")
+    print(f"3. MQA cuts KV memory {n_heads}x ({n_heads}->1 KV head) -- max savings,")
     print("   more quality loss because all heads share one KV view.")
-    print(f"4. Sliding window (w={WINDOW_SIZE}) makes attention O(n*w) not O(n^2),")
-    print(f"   {SEQ_LEN // WINDOW_SIZE}x cheaper at seq_len={SEQ_LEN}. "
+    print(f"4. Sliding window (w={window_size}) makes attention O(n*w) not O(n^2),")
+    print(f"   {seq_len // window_size}x cheaper at seq_len={seq_len}. "
           "Works when locality dominates.")
     print("\nProduction systems compose these: Mistral uses sliding window + GQA,")
     print("LLaMA 2 uses GQA, PaLM/Falcon use MQA. Choose based on whether your")
     print("bottleneck is compute (window), memory (MQA/GQA), or neither (full MHA).")
+
+
+# === INTERACTIVE MODE ===
+# Optional functionality: allows parameter exploration without editing the script.
+# Activated only via --interactive flag; default behavior is unchanged.
+
+import argparse
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Compare MHA, GQA, MQA, and sliding window attention variants"
+    )
+    parser.add_argument(
+        "--interactive", action="store_true",
+        help="Enter interactive mode to modify parameters and re-run comparisons"
+    )
+    return parser.parse_args()
+
+
+def interactive_loop() -> None:
+    """Interactive parameter exploration mode."""
+    print("\n=== INTERACTIVE MODE ===")
+    print("Modify parameters and re-run the attention comparison.")
+    print("Type 'quit' to exit.\n")
+
+    params = {
+        'n_heads': N_HEADS,
+        'seq_len': SEQ_LEN,
+        'd_model': D_MODEL,
+        'n_kv_heads_gqa': N_KV_HEADS_GQA,
+        'window_size': WINDOW_SIZE,
+    }
+
+    while True:
+        print("Current parameters:")
+        for k, v in params.items():
+            print(f"  {k} = {v}")
+        print(f"  head_dim = {params['d_model'] // params['n_heads']}  (derived)")
+
+        user_input = input(
+            "\nParameter to change (or 'run' to execute, 'quit' to exit): "
+        ).strip().lower()
+
+        if user_input == 'quit':
+            break
+        elif user_input == 'run':
+            # Validate d_model is divisible by n_heads
+            if params['d_model'] % params['n_heads'] != 0:
+                print(f"ERROR: d_model ({params['d_model']}) must be divisible "
+                      f"by n_heads ({params['n_heads']})")
+                continue
+            if params['n_heads'] % params['n_kv_heads_gqa'] != 0:
+                print(f"ERROR: n_heads ({params['n_heads']}) must be divisible "
+                      f"by n_kv_heads_gqa ({params['n_kv_heads_gqa']})")
+                continue
+            run_attention_comparison(
+                params['seq_len'], params['d_model'], params['n_heads'],
+                params['n_kv_heads_gqa'], params['window_size']
+            )
+        elif '=' in user_input:
+            key, _, val = user_input.partition('=')
+            key = key.strip()
+            val = val.strip()
+            if key not in params:
+                print(f"Unknown parameter: {key}")
+                print(f"Available: {', '.join(params)}")
+                continue
+            try:
+                params[key] = int(val)
+            except ValueError:
+                print(f"Invalid integer: {val}")
+        else:
+            print("Enter 'parameter=value', 'run', or 'quit'.")
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    if args.interactive:
+        interactive_loop()
+    else:
+        # === DEFAULT BEHAVIOR (unchanged) ===
+        run_attention_comparison(SEQ_LEN, D_MODEL, N_HEADS, N_KV_HEADS_GQA, WINDOW_SIZE)

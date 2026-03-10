@@ -414,9 +414,22 @@ def gpt_forward(
     return logits
 
 
-# === TRAINING LOOP ===
+# === TRAINING AND INFERENCE ===
 
-if __name__ == "__main__":
+
+def run_gpt(
+    n_embd: int, block_size: int, num_steps: int, learning_rate: float
+) -> None:
+    """Full train + inference loop with the given hyperparameters."""
+    global N_EMBD, BLOCK_SIZE, NUM_STEPS, LEARNING_RATE, HEAD_DIM, VOCAB_SIZE
+
+    # Update globals that init_parameters and gpt_forward read
+    N_EMBD = n_embd
+    BLOCK_SIZE = block_size
+    NUM_STEPS = num_steps
+    LEARNING_RATE = learning_rate
+    HEAD_DIM = N_EMBD // N_HEAD
+
     # -- Prepare vocabulary and data --
     print("Loading data...")
     docs = load_data(DATA_URL, DATA_FILE)
@@ -431,6 +444,7 @@ if __name__ == "__main__":
     print(f"Vocabulary size: {VOCAB_SIZE} (characters + BOS token)")
 
     # Initialize parameters after we know vocab size
+    random.seed(42)
     params = init_parameters()
 
     # Flatten all parameters into a single list for optimizer bookkeeping
@@ -562,3 +576,82 @@ if __name__ == "__main__":
 
         # Print the generated name
         print(f"  {sample_idx + 1:>2}. {''.join(generated)}")
+
+
+# === INTERACTIVE MODE ===
+# Optional functionality: allows parameter exploration without editing the script.
+# Activated only via --interactive flag; default behavior is unchanged.
+
+import argparse
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="GPT language model from first principles with scalar autograd"
+    )
+    parser.add_argument(
+        "--interactive", action="store_true",
+        help="Enter interactive mode to modify parameters and re-train"
+    )
+    return parser.parse_args()
+
+
+def interactive_loop() -> None:
+    """Interactive parameter exploration mode."""
+    print("\n=== INTERACTIVE MODE ===")
+    print("Modify parameters and re-train the GPT model.")
+    print("Type 'quit' to exit.\n")
+
+    params = {
+        'n_embd': N_EMBD,
+        'block_size': BLOCK_SIZE,
+        'num_steps': NUM_STEPS,
+        'learning_rate': LEARNING_RATE,
+    }
+
+    while True:
+        print("Current parameters:")
+        for k, v in params.items():
+            print(f"  {k} = {v}")
+
+        user_input = input(
+            "\nParameter to change (or 'run' to execute, 'quit' to exit): "
+        ).strip().lower()
+
+        if user_input == 'quit':
+            break
+        elif user_input == 'run':
+            if params['n_embd'] % N_HEAD != 0:
+                print(f"ERROR: n_embd ({params['n_embd']}) must be divisible "
+                      f"by n_head ({N_HEAD})")
+                continue
+            run_gpt(
+                params['n_embd'], params['block_size'],
+                params['num_steps'], params['learning_rate']
+            )
+        elif '=' in user_input:
+            key, _, val = user_input.partition('=')
+            key = key.strip()
+            val = val.strip()
+            if key not in params:
+                print(f"Unknown parameter: {key}")
+                print(f"Available: {', '.join(params)}")
+                continue
+            try:
+                if key == 'learning_rate':
+                    params[key] = float(val)
+                else:
+                    params[key] = int(val)
+            except ValueError:
+                print(f"Invalid value: {val}")
+        else:
+            print("Enter 'parameter=value', 'run', or 'quit'.")
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    if args.interactive:
+        interactive_loop()
+    else:
+        # === DEFAULT BEHAVIOR (unchanged) ===
+        run_gpt(N_EMBD, BLOCK_SIZE, NUM_STEPS, LEARNING_RATE)

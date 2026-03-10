@@ -563,7 +563,17 @@ def generate_names(
 
 # === MAIN ===
 
-if __name__ == "__main__":
+
+def run_rnn_comparison(
+    n_hidden: int, num_steps: int, learning_rate: float
+) -> None:
+    """Run all 3 RNN architectures with the given hyperparameters."""
+    global N_HIDDEN, NUM_STEPS, LEARNING_RATE
+
+    N_HIDDEN = n_hidden
+    NUM_STEPS = num_steps
+    LEARNING_RATE = learning_rate
+
     print("=" * 70)
     print("RNN VS GRU VS LSTM: Three Generations of Recurrent Architecture")
     print("=" * 70)
@@ -576,9 +586,9 @@ if __name__ == "__main__":
 
     unique_chars = sorted(set(''.join(all_docs)))
     BOS = len(unique_chars)
-    VOCAB_SIZE = len(unique_chars) + 1
+    vocab_size = len(unique_chars) + 1
 
-    print(f"Training on {len(docs)} names, vocab size: {VOCAB_SIZE}")
+    print(f"Training on {len(docs)} names, vocab size: {vocab_size}")
     print(f"Hidden dim: {N_HIDDEN}, max seq len: {SEQ_LEN}")
     print(f"Steps: {NUM_STEPS}, learning rate: {LEARNING_RATE}\n")
 
@@ -594,9 +604,9 @@ if __name__ == "__main__":
 
     for model_name, init_fn, step_fn in models:
         random.seed(42)
-        params = init_fn(VOCAB_SIZE)
+        params = init_fn(vocab_size)
         final_loss, loss_history = train_model(
-            docs, unique_chars, params, step_fn, model_name, VOCAB_SIZE
+            docs, unique_chars, params, step_fn, model_name, vocab_size
         )
         results[model_name] = {
             'final_loss': final_loss,
@@ -616,7 +626,7 @@ if __name__ == "__main__":
         # Use freshly trained params for gradient measurement
         params, _ = trained_params[model_name]
         norms = measure_gradient_norms(
-            docs, unique_chars, params, step_fn, model_name, VOCAB_SIZE
+            docs, unique_chars, params, step_fn, model_name, vocab_size
         )
         gradient_data[model_name] = norms
 
@@ -709,7 +719,7 @@ if __name__ == "__main__":
     # === INFERENCE ===
     print()
     for model_name, (params, step_fn) in trained_params.items():
-        generate_names(params, step_fn, unique_chars, VOCAB_SIZE, model_name)
+        generate_names(params, step_fn, unique_chars, vocab_size, model_name)
 
     # === ARCHITECTURAL INSIGHT ===
     print("=" * 70)
@@ -737,3 +747,76 @@ if __name__ == "__main__":
     print("  open (f_t near 1). Gradients ride the same conveyor belt backward.")
     print("  This is why LSTM was the dominant sequence model for 20 years (1997-2017)")
     print("  until transformers replaced recurrence with attention entirely.")
+
+
+# === INTERACTIVE MODE ===
+# Optional functionality: allows parameter exploration without editing the script.
+# Activated only via --interactive flag; default behavior is unchanged.
+
+import argparse
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="RNN vs GRU vs LSTM: three generations of recurrent architecture compared"
+    )
+    parser.add_argument(
+        "--interactive", action="store_true",
+        help="Enter interactive mode to modify parameters and re-run comparison"
+    )
+    return parser.parse_args()
+
+
+def interactive_loop() -> None:
+    """Interactive parameter exploration mode."""
+    print("\n=== INTERACTIVE MODE ===")
+    print("Modify parameters and re-run the RNN/GRU/LSTM comparison.")
+    print("Type 'quit' to exit.\n")
+
+    params = {
+        'n_hidden': N_HIDDEN,
+        'num_steps': NUM_STEPS,
+        'learning_rate': LEARNING_RATE,
+    }
+
+    while True:
+        print("Current parameters:")
+        for k, v in params.items():
+            print(f"  {k} = {v}")
+
+        user_input = input(
+            "\nParameter to change (or 'run' to execute, 'quit' to exit): "
+        ).strip().lower()
+
+        if user_input == 'quit':
+            break
+        elif user_input == 'run':
+            run_rnn_comparison(
+                params['n_hidden'], params['num_steps'], params['learning_rate']
+            )
+        elif '=' in user_input:
+            key, _, val = user_input.partition('=')
+            key = key.strip()
+            val = val.strip()
+            if key not in params:
+                print(f"Unknown parameter: {key}")
+                print(f"Available: {', '.join(params)}")
+                continue
+            try:
+                if key == 'learning_rate':
+                    params[key] = float(val)
+                else:
+                    params[key] = int(val)
+            except ValueError:
+                print(f"Invalid value: {val}")
+        else:
+            print("Enter 'parameter=value', 'run', or 'quit'.")
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    if args.interactive:
+        interactive_loop()
+    else:
+        # === DEFAULT BEHAVIOR (unchanged) ===
+        run_rnn_comparison(N_HIDDEN, NUM_STEPS, LEARNING_RATE)
