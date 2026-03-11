@@ -26,6 +26,7 @@ class NoMagicOverview(Scene):
 
         self.act1_title()
         self.act2_montage()
+        self.act2_5_resources()
         self.act3_structure()
         self.act4_cta()
 
@@ -85,6 +86,10 @@ class NoMagicOverview(Scene):
         self.montage_diffusion()
         self.montage_gpt()
         self.montage_agents()
+        self.montage_vit()
+        self.montage_speculative()
+        self.montage_lstm()
+        self.montage_retrieval()
 
     # --- microtokenizer: text -> tokens ---
     def montage_tokenizer(self):
@@ -673,6 +678,384 @@ class NoMagicOverview(Scene):
         self.play(*[FadeOut(m) for m in self.mobjects], run_time=0.4)
         self.wait(0.15)
 
+    # --- microvit: image patches -> transformer ---
+    def montage_vit(self):
+        label = self._montage_label("microvit.py", "01-foundations")
+
+        # 4x4 grid of colored image patches
+        patch_colors = [
+            ACCENT_BLUE, ACCENT_GREEN, ACCENT_ORANGE, ACCENT_PURPLE,
+            ACCENT_RED, ACCENT_TEAL, ACCENT_BLUE, ACCENT_GREEN,
+            ACCENT_ORANGE, ACCENT_PURPLE, ACCENT_RED, ACCENT_TEAL,
+            ACCENT_BLUE, ACCENT_GREEN, ACCENT_ORANGE, ACCENT_RED,
+        ]
+        patches = VGroup()
+        for i in range(4):
+            for j in range(4):
+                idx = i * 4 + j
+                patch = Square(
+                    side_length=0.6, fill_opacity=0.4,
+                    fill_color=patch_colors[idx],
+                    stroke_width=1.5, stroke_color=patch_colors[idx]
+                )
+                patch.move_to(LEFT * 4 + RIGHT * j * 0.65 + DOWN * i * 0.65 + UP * 0.8)
+                patches.add(patch)
+
+        img_label = Text("Image (4×4 patches)", font_size=18, color=TEXT_DIM)
+        img_label.next_to(patches, DOWN, buff=0.3)
+
+        # Transformer stack on the right
+        stack_labels = ["Patch Embed", "Position", "Self-Attention", "MLP Head"]
+        stack_colors = [ACCENT_BLUE, ACCENT_GREEN, ACCENT_ORANGE, ACCENT_PURPLE]
+        stack = VGroup()
+        for name, color in zip(stack_labels, stack_colors):
+            block = VGroup(
+                RoundedRectangle(width=2.8, height=0.55, corner_radius=0.1,
+                                 color=color, fill_opacity=0.2, stroke_width=2),
+                Text(name, font_size=18, color=color)
+            )
+            stack.add(block)
+
+        stack.arrange(DOWN, buff=0.12)
+        stack.move_to(RIGHT * 3 + DOWN * 0.2)
+
+        # Arrows from patches to transformer
+        flow_arrow = Arrow(patches.get_right() + RIGHT * 0.2, stack.get_left(),
+                           buff=0.15, color=TEXT_DIM, stroke_width=2)
+        flow_label = Text("flatten", font_size=16, color=TEXT_DIM)
+        flow_label.next_to(flow_arrow, UP, buff=0.1)
+
+        # Insight label
+        insight = Text("Images become token sequences", font_size=20, color=ACCENT_TEAL)
+        insight.to_edge(DOWN, buff=0.5)
+
+        self.play(FadeIn(label), run_time=0.4)
+        self.play(
+            LaggedStart(*[FadeIn(p, scale=0.7) for p in patches], lag_ratio=0.02),
+            run_time=0.8
+        )
+        self.play(FadeIn(img_label), run_time=0.3)
+        self.play(GrowArrow(flow_arrow), FadeIn(flow_label), run_time=0.5)
+
+        # Build stack with connecting arrows
+        stack_arrows = VGroup()
+        for i, block in enumerate(stack):
+            self.play(FadeIn(block, shift=DOWN * 0.15), run_time=0.25)
+            if i < len(stack) - 1:
+                a = Arrow(stack[i].get_bottom(), stack[i + 1].get_top(),
+                          buff=0.04, color=GREY_D, stroke_width=1.5)
+                stack_arrows.add(a)
+                self.play(GrowArrow(a), run_time=0.12)
+
+        self.play(FadeIn(insight, shift=UP * 0.2), run_time=0.5)
+        self.wait(1.0)
+
+        self.play(*[FadeOut(m) for m in self.mobjects], run_time=0.4)
+        self.wait(0.15)
+
+    # --- microspeculative: draft + verify decoding ---
+    def montage_speculative(self):
+        label = self._montage_label("microspeculative.py", "03-systems")
+
+        # Draft model on the left
+        draft_box = VGroup(
+            RoundedRectangle(width=2.6, height=1.0, corner_radius=0.12,
+                             color=ACCENT_GREEN, fill_opacity=0.15, stroke_width=2),
+            Text("Draft Model", font_size=20, weight=BOLD, color=ACCENT_GREEN),
+            Text("small / fast", font_size=14, color=TEXT_DIM),
+        )
+        draft_box[1].move_to(draft_box[0].get_center() + UP * 0.15)
+        draft_box[2].move_to(draft_box[0].get_center() + DOWN * 0.2)
+        draft_box.move_to(LEFT * 3.5 + UP * 1.5)
+
+        # Target model on the right
+        target_box = VGroup(
+            RoundedRectangle(width=2.6, height=1.0, corner_radius=0.12,
+                             color=ACCENT_BLUE, fill_opacity=0.15, stroke_width=2),
+            Text("Target Model", font_size=20, weight=BOLD, color=ACCENT_BLUE),
+            Text("large / accurate", font_size=14, color=TEXT_DIM),
+        )
+        target_box[1].move_to(target_box[0].get_center() + UP * 0.15)
+        target_box[2].move_to(target_box[0].get_center() + DOWN * 0.2)
+        target_box.move_to(RIGHT * 3.5 + UP * 1.5)
+
+        # Draft tokens row
+        draft_tokens = VGroup()
+        token_texts = ["The", "cat", "sat", "on"]
+        for i, t in enumerate(token_texts):
+            tok = VGroup(
+                RoundedRectangle(width=1.0, height=0.55, corner_radius=0.1,
+                                 color=ACCENT_GREEN, fill_opacity=0.2, stroke_width=1.5),
+                Text(t, font_size=18, color=ACCENT_GREEN)
+            )
+            draft_tokens.add(tok)
+        draft_tokens.arrange(RIGHT, buff=0.15)
+        draft_tokens.move_to(DOWN * 0.2)
+
+        draft_label = Text("Draft: 4 tokens (fast)", font_size=16, color=TEXT_DIM)
+        draft_label.next_to(draft_tokens, UP, buff=0.25)
+
+        # Verification marks
+        marks = ["✓", "✓", "✓", "✗"]
+        mark_colors = [ACCENT_GREEN, ACCENT_GREEN, ACCENT_GREEN, ACCENT_RED]
+        mark_group = VGroup()
+        for i, (mark, color) in enumerate(zip(marks, mark_colors)):
+            m = Text(mark, font_size=24, color=color)
+            m.next_to(draft_tokens[i], DOWN, buff=0.15)
+            mark_group.add(m)
+
+        verify_label = Text("Verify: 1 pass", font_size=16, color=TEXT_DIM)
+        verify_label.next_to(mark_group, DOWN, buff=0.25)
+
+        # Speed label
+        speed = Text("~2-3× faster decoding", font_size=24, weight=BOLD, color=ACCENT_TEAL)
+        speed.to_edge(DOWN, buff=0.5)
+
+        self.play(FadeIn(label), run_time=0.4)
+        self.play(FadeIn(draft_box, shift=RIGHT * 0.2), FadeIn(target_box, shift=LEFT * 0.2), run_time=0.6)
+
+        # Draft produces tokens
+        arrow_draft = Arrow(draft_box.get_bottom(), draft_tokens.get_top() + LEFT * 1.5,
+                            buff=0.15, color=ACCENT_GREEN, stroke_width=2)
+        self.play(GrowArrow(arrow_draft), run_time=0.3)
+        self.play(FadeIn(draft_label), run_time=0.3)
+        self.play(
+            LaggedStart(*[FadeIn(t, scale=0.8) for t in draft_tokens], lag_ratio=0.15),
+            run_time=0.8
+        )
+
+        # Target verifies
+        arrow_target = Arrow(target_box.get_bottom(), draft_tokens.get_top() + RIGHT * 1.5,
+                             buff=0.15, color=ACCENT_BLUE, stroke_width=2)
+        self.play(GrowArrow(arrow_target), FadeIn(verify_label), run_time=0.4)
+        self.play(
+            LaggedStart(*[FadeIn(m, scale=1.3) for m in mark_group], lag_ratio=0.15),
+            run_time=0.8
+        )
+
+        self.play(FadeIn(speed, shift=UP * 0.2), run_time=0.5)
+        self.wait(0.8)
+
+        self.play(*[FadeOut(m) for m in self.mobjects], run_time=0.4)
+        self.wait(0.15)
+
+    # --- microlstm: LSTM cell with 4 gates ---
+    def montage_lstm(self):
+        label = self._montage_label("microlstm.py", "01-foundations")
+
+        # Cell state arrow running horizontally
+        cell_arrow = Arrow(LEFT * 5, RIGHT * 5, buff=0, color=ACCENT_TEAL,
+                           stroke_width=3)
+        cell_arrow.move_to(UP * 1.5)
+        cell_label = Text("Cell State (c_t)", font_size=18, color=ACCENT_TEAL)
+        cell_label.next_to(cell_arrow, UP, buff=0.15)
+
+        # 4 gates
+        gate_data = [
+            ("Forget", "σ", ACCENT_RED),
+            ("Input", "σ", ACCENT_GREEN),
+            ("Candidate", "tanh", ACCENT_BLUE),
+            ("Output", "σ", ACCENT_PURPLE),
+        ]
+        gates = VGroup()
+        for name, activation, color in gate_data:
+            gate = VGroup(
+                RoundedRectangle(width=1.8, height=1.2, corner_radius=0.1,
+                                 color=color, fill_opacity=0.2, stroke_width=2),
+                Text(name, font_size=16, weight=BOLD, color=color),
+                Text(activation, font_size=22, color=color),
+            )
+            gate[1].move_to(gate[0].get_center() + UP * 0.25)
+            gate[2].move_to(gate[0].get_center() + DOWN * 0.2)
+            gates.add(gate)
+
+        gates.arrange(RIGHT, buff=0.3)
+        gates.move_to(DOWN * 0.3)
+
+        # Arrows from gates up to cell state
+        gate_arrows = VGroup()
+        for gate in gates:
+            a = Arrow(gate.get_top(), cell_arrow.get_bottom(),
+                      buff=0.15, color=GREY_D, stroke_width=1.5)
+            # Aim at closest point on cell arrow
+            target_x = gate.get_center()[0]
+            a = Arrow(gate.get_top(),
+                      np.array([target_x, cell_arrow.get_bottom()[1], 0]),
+                      buff=0.1, color=GREY_D, stroke_width=1.5)
+            gate_arrows.add(a)
+
+        # Simple RNN comparison
+        rnn_box = VGroup(
+            RoundedRectangle(width=2.0, height=0.8, corner_radius=0.1,
+                             color=TEXT_DIM, fill_opacity=0.1, stroke_width=1.5),
+            Text("Simple RNN: 1 gate", font_size=14, color=TEXT_DIM)
+        )
+        rnn_box.move_to(DOWN * 2.2 + LEFT * 3)
+
+        lstm_note = Text("LSTM: 4 gates → long-range memory", font_size=18, color=ACCENT_TEAL)
+        lstm_note.to_edge(DOWN, buff=0.5)
+
+        self.play(FadeIn(label), run_time=0.4)
+        self.play(GrowArrow(cell_arrow), FadeIn(cell_label), run_time=0.6)
+
+        # Gates appear with pulse
+        for i, gate in enumerate(gates):
+            self.play(FadeIn(gate, scale=0.85), run_time=0.3)
+            self.play(GrowArrow(gate_arrows[i]), run_time=0.2)
+            self.play(Indicate(gate, color=gate_data[i][2], scale_factor=1.05), run_time=0.2)
+
+        self.play(FadeIn(rnn_box, shift=UP * 0.2), run_time=0.4)
+        self.play(FadeIn(lstm_note, shift=UP * 0.2), run_time=0.4)
+        self.wait(0.8)
+
+        self.play(*[FadeOut(m) for m in self.mobjects], run_time=0.4)
+        self.wait(0.15)
+
+    # --- BM25 + Vector Search: sparse vs dense retrieval ---
+    def montage_retrieval(self):
+        label = self._montage_label("microbm25 + microvectorsearch", "03-systems")
+
+        # Divider
+        divider = Line(UP * 2.5, DOWN * 2.0, color=GREY_D, stroke_width=1)
+
+        # Left side: BM25 lexical
+        bm25_title = Text("BM25 (lexical)", font_size=24, color=ACCENT_ORANGE)
+        bm25_title.move_to(LEFT * 3.5 + UP * 2.2)
+
+        # Term frequency bars
+        terms = ["python", "magic", "learn", "code", "zero"]
+        tf_values = [0.85, 0.6, 0.45, 0.7, 0.3]
+        bars = VGroup()
+        bar_labels = VGroup()
+        for i, (term, val) in enumerate(zip(terms, tf_values)):
+            bar = Rectangle(
+                width=val * 3.0, height=0.35,
+                fill_opacity=0.4, fill_color=ACCENT_ORANGE,
+                stroke_width=1.5, stroke_color=ACCENT_ORANGE
+            )
+            bar.move_to(LEFT * 3.0 + DOWN * i * 0.5 + UP * 1.0)
+            bar.align_to(LEFT * 4.8, LEFT)
+            bars.add(bar)
+
+            t = Text(term, font_size=14, color=TEXT_DIM)
+            t.next_to(bar, LEFT, buff=0.15)
+            bar_labels.add(t)
+
+        tf_label = Text("Term Frequency", font_size=16, color=TEXT_DIM)
+        tf_label.next_to(bars, DOWN, buff=0.3)
+
+        # Right side: Vector search
+        vec_title = Text("Vector Search (semantic)", font_size=24, color=ACCENT_BLUE)
+        vec_title.move_to(RIGHT * 3.2 + UP * 2.2)
+
+        # 2D scatter of dots with nearest-neighbor arrows
+        np.random.seed(99)
+        n_points = 12
+        xs = np.random.uniform(-1.5, 1.5, n_points)
+        ys = np.random.uniform(-1.2, 1.2, n_points)
+        dots = VGroup()
+        for x, y in zip(xs, ys):
+            dot = Dot(
+                point=RIGHT * (3.2 + x) + DOWN * (0.2 - y),
+                radius=0.08, color=ACCENT_BLUE, fill_opacity=0.6
+            )
+            dots.add(dot)
+
+        # Query point
+        query_dot = Dot(
+            point=RIGHT * 3.2 + DOWN * 0.2,
+            radius=0.12, color=ACCENT_RED, fill_opacity=0.9
+        )
+        query_label = Text("query", font_size=14, color=ACCENT_RED)
+        query_label.next_to(query_dot, DOWN, buff=0.12)
+
+        # Nearest neighbor arrows to 3 closest
+        distances = [np.sqrt((3.2 + x - 3.2)**2 + (0.2 - y - 0.2)**2) for x, y in zip(xs, ys)]
+        nearest_indices = np.argsort(distances)[:3]
+        nn_arrows = VGroup()
+        for idx in nearest_indices:
+            a = Arrow(query_dot.get_center(), dots[idx].get_center(),
+                      buff=0.15, color=ACCENT_GREEN, stroke_width=2)
+            nn_arrows.add(a)
+
+        # Bottom label
+        comparison = Text("Sparse vs Dense Retrieval", font_size=22, weight=BOLD, color=ACCENT_TEAL)
+        comparison.to_edge(DOWN, buff=0.5)
+
+        self.play(FadeIn(label), Create(divider), run_time=0.4)
+        self.play(Write(bm25_title), Write(vec_title), run_time=0.5)
+
+        # BM25 bars
+        self.play(
+            LaggedStart(*[GrowFromEdge(b, LEFT) for b in bars], lag_ratio=0.1),
+            LaggedStart(*[FadeIn(t) for t in bar_labels], lag_ratio=0.1),
+            run_time=0.8
+        )
+        self.play(FadeIn(tf_label), run_time=0.3)
+
+        # Vector dots
+        self.play(
+            LaggedStart(*[FadeIn(d, scale=0.5) for d in dots], lag_ratio=0.04),
+            run_time=0.6
+        )
+        self.play(FadeIn(query_dot, scale=1.5), FadeIn(query_label), run_time=0.4)
+        self.play(
+            LaggedStart(*[GrowArrow(a) for a in nn_arrows], lag_ratio=0.15),
+            run_time=0.6
+        )
+
+        self.play(FadeIn(comparison, shift=UP * 0.2), run_time=0.5)
+        self.wait(0.8)
+
+        self.play(*[FadeOut(m) for m in self.mobjects], run_time=0.4)
+        self.wait(0.15)
+
+    # =================================================================
+    # ACT 2.5: Learning Resources (~8s)
+    # =================================================================
+    def act2_5_resources(self):
+        section_title = Text("Learning Resources", font_size=36, weight=BOLD, color=TEXT_BRIGHT)
+        section_title.to_edge(UP, buff=0.6)
+
+        resources = [
+            ("Challenges", "Predict-the-behavior\nexercises", ACCENT_ORANGE, "?"),
+            ("Flashcards", "Anki deck\n147 cards", ACCENT_BLUE, "▣"),
+            ("Translations", "6 languages\ncommunity-driven", ACCENT_GREEN, "🌐"),
+        ]
+
+        boxes = VGroup()
+        for name, desc, color, icon_char in resources:
+            bg = RoundedRectangle(
+                width=3.2, height=2.4, corner_radius=0.15,
+                color=color, fill_opacity=0.1, stroke_width=2
+            )
+            icon = Text(icon_char, font_size=36, color=color)
+            icon.move_to(bg.get_center() + UP * 0.55)
+            title = Text(name, font_size=22, weight=BOLD, color=color)
+            title.move_to(bg.get_center() + DOWN * 0.1)
+            description = Text(desc, font_size=14, color=TEXT_DIM, line_spacing=1.2)
+            description.move_to(bg.get_center() + DOWN * 0.7)
+            box = VGroup(bg, icon, title, description)
+            boxes.add(box)
+
+        boxes.arrange(RIGHT, buff=0.5)
+        boxes.move_to(DOWN * 0.3)
+
+        self.play(Write(section_title), run_time=0.6)
+        self.play(
+            LaggedStart(*[FadeIn(b, shift=UP * 0.3, scale=0.9) for b in boxes], lag_ratio=0.25),
+            run_time=1.5
+        )
+
+        # Brief highlight pulse on each
+        for box in boxes:
+            self.play(Indicate(box[0], scale_factor=1.03), run_time=0.3)
+
+        self.wait(1.5)
+
+        self.play(*[FadeOut(m) for m in self.mobjects], run_time=0.5)
+        self.wait(0.3)
+
     # =================================================================
     # ACT 3: Repository Structure + Stats (42–56s)
     # =================================================================
@@ -790,17 +1173,13 @@ class NoMagicOverview(Scene):
         )
         url.move_to(DOWN * 2)
 
-        # Star icon substitute
-        star = Text("\u2605", font_size=28, color=ACCENT_ORANGE)
-        star.next_to(url, RIGHT, buff=0.4)
-
         self.play(Write(cta), run_time=1.0)
         self.play(FadeIn(terminal_bg), run_time=0.4)
         self.play(Write(cmd1), run_time=1.0)
         self.play(Write(cmd2), run_time=0.8)
         self.wait(0.6)
 
-        self.play(FadeIn(url, shift=UP * 0.2), FadeIn(star, scale=1.5), run_time=0.7)
+        self.play(FadeIn(url, shift=UP * 0.2), run_time=0.7)
 
         # Hold for screenshot
         self.wait(4.5)

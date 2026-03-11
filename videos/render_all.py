@@ -52,6 +52,14 @@ SCENE_MAP = {
     "scene_microssm.py": "SSMScene",
     "scene_microtokenizer.py": "TokenizerScene",
     "scene_microvae.py": "VAEScene",
+    "scene_microlstm.py": "LSTMScene",
+    "scene_microresnet.py": "ResNetScene",
+    "scene_microvit.py": "ViTScene",
+    "scene_microvectorsearch.py": "VectorSearchScene",
+    "scene_microbm25.py": "BM25Scene",
+    "scene_microspeculative.py": "SpeculativeScene",
+    "scene_micromcts.py": "MCTSScene",
+    "scene_microreact.py": "ReActScene",
 }
 
 QUALITY_MAP = {
