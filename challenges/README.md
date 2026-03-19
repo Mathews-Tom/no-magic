@@ -9,13 +9,25 @@ Each challenge presents a code snippet or scenario drawn directly from one of th
 | File                           | Script                             | Topics                                                                     |
 | ------------------------------ | ---------------------------------- | -------------------------------------------------------------------------- |
 | [attention.md](attention.md)   | `03-systems/microattention.py`     | Scaling factor, identical keys, causal masking, sliding window             |
-| [gpt.md](gpt.md)               | `01-foundations/microgpt.py`       | Context window, head dimensions, learning rate, KV cache                   |
-| [gan.md](gan.md)               | `01-foundations/microgan.py`       | Gradient saturation, mode collapse, training balance                       |
-| [dpo.md](dpo.md)               | `02-alignment/microdpo.py`         | Beta parameter, identical completions, reference divergence                |
-| [optimizer.md](optimizer.md)   | `01-foundations/microoptimizer.py` | Adam degeneracy, bias correction, constant gradients                       |
-| [discretize.md](discretize.md) | `03-systems/microdiscretize.py`    | Euler stability, trapezoidal alpha, ZOH unconditional stability            |
 | [complexssm.md](complexssm.md) | `03-systems/microcomplexssm.py`    | Real-only parity failure, complex rotation matrix, data-dependent rotation |
+| [discretize.md](discretize.md) | `03-systems/microdiscretize.py`    | Euler stability, trapezoidal alpha, ZOH unconditional stability            |
+| [dpo.md](dpo.md)               | `02-alignment/microdpo.py`         | Beta parameter, identical completions, reference divergence                |
+| [embedding.md](embedding.md)   | `01-foundations/microembedding.py` | Temperature, false negatives, augmentation, representation collapse        |
+| [gan.md](gan.md)               | `01-foundations/microgan.py`       | Gradient saturation, mode collapse, training balance                       |
+| [gpt.md](gpt.md)               | `01-foundations/microgpt.py`       | Context window, head dimensions, learning rate, KV cache                   |
+| [kv.md](kv.md)                 | `03-systems/microkv.py`            | Multiply count scaling, cache memory formula, paged attention              |
+| [lora.md](lora.md)             | `02-alignment/microlora.py`        | Zero-B initialization, frozen gradient zeroing, rank and parameter count   |
+| [mcts.md](mcts.md)             | `04-agents/micromcts.py`           | UCB1 value negation, visit count selection, exploration constant           |
+| [moe.md](moe.md)               | `02-alignment/micromoe.py`         | Expert collapse, top-K renormalization, gradient bridge, aux loss product  |
+| [optimizer.md](optimizer.md)   | `01-foundations/microoptimizer.py` | Adam degeneracy, bias correction, constant gradients                       |
+| [ppo.md](ppo.md)               | `02-alignment/microppo.py`         | Clipping asymmetry, advantage baseline, KL penalty, fresh Adam state       |
+| [quant.md](quant.md)           | `03-systems/microquant.py`         | Absmax outlier sensitivity, INT4 range, per-channel vs per-tensor          |
+| [react.md](react.md)           | `04-agents/microreact.py`          | Action masking, reward shaping, EMA baseline, TAO loop budget              |
+| [rnn.md](rnn.md)               | `01-foundations/micrornn.py`       | Vanishing gradients, GRU update gate, gradient norm ratio                  |
 | [roofline.md](roofline.md)     | `03-systems/microroofline.py`      | Arithmetic intensity, MIMO rank utilization, FLOPs vs wall-clock time      |
+| [ssm.md](ssm.md)               | `03-systems/microssm.py`           | Fixed state vs KV cache, delta bias, selective B/C, Euler discretization   |
+| [tokenizer.md](tokenizer.md)   | `01-foundations/microtokenizer.py` | Merge order, priority replay, vocab size, corpus collapse                  |
+| [vae.md](vae.md)               | `01-foundations/microvae.py`       | Reparameterization trick, KL collapse, log_var clamping, latent structure  |
 
 ## How to Use
 

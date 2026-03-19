@@ -9,6 +9,7 @@ Measured on Apple M-series, Python 3.12. Times are wall-clock.
 | Script | Algorithm | Key Concept | Time |
 |--------|-----------|-------------|------|
 | `micromcts.py` | Monte Carlo Tree Search | UCB1 exploration + random rollouts | ~90s |
+| `microreact.py` | ReAct (Reasoning + Acting) | Thought→Action→Observation loop with REINFORCE policy | ~3m |
 
 ## What Connects These Scripts
 
@@ -21,11 +22,11 @@ Key ideas shared across agent algorithms:
 - **Credit assignment** — figuring out which past actions led to current rewards
 - **Anytime computation** — returning a better answer the longer you let the algorithm run
 
+`microreact.py` demonstrates the full agent loop — perception, reasoning, action selection, and learning from outcomes — connecting tree search (MCTS) with learned policies (REINFORCE). Where MCTS builds value estimates through simulation, ReAct builds them through structured reasoning traces grounded by environment observations.
+
 ## Future Candidates
 
 | Algorithm | What It Would Teach | Notes |
 |-----------|---------------------|-------|
 | **Q-Learning** | Tabular reinforcement learning, Bellman equation | Classic RL, pairs well with MCTS |
-| **Policy Gradient (REINFORCE)** | Gradient-based policy optimization | Bridges to PPO in 02-alignment |
 | **Minimax + Alpha-Beta** | Adversarial search with pruning | Contrast with MCTS approach |
-| **Multi-Armed Bandit** | Pure exploration/exploitation | UCB1 foundation without tree search |

@@ -1,0 +1,114 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Verification mode"
+        required: true
+        default: "quick"
+        type: choice
+        options:
+          - quick
+          - full
+
+jobs:
+  # ── Fast gate: runs on every push/PR (~30 seconds) ──────────────
+  # Catches syntax errors, import failures, and missing seed.
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Syntax check all scripts
+        run: |
+          status=0
+          for script in 0[1-4]-*/*.py; do
+            if ! python -m py_compile "$script" 2>&1; then
+              echo "FAIL: $script"
+              status=1
+            fi
+          done
+          exit $status
+
+      - name: Verify random.seed(42) is present
+        run: |
+          status=0
+          for script in 0[1-4]-*/micro*.py; do
+            if ! grep -q 'random\.seed(42)' "$script"; then
+              echo "MISSING random.seed(42): $script"
+              status=1
+            fi
+          done
+          exit $status
+
+      - name: Verify no external imports
+        run: |
+          # Allowed stdlib modules — anything else is a constraint violation.
+          status=0
+          for script in 0[1-4]-*/micro*.py; do
+            # Extract import lines, skip stdlib and __future__
+            bad=$(python -c "
+          import re, sys
+          allowed = {
+              'os', 'math', 'random', 'json', 'struct', 'urllib', 'collections',
+              'itertools', 'functools', 'string', 'hashlib', 'time', 'sys',
+              'argparse', 'textwrap', 'io', 'copy', 'abc', 'typing',
+              'urllib.request', 'urllib.error', 'urllib.parse',
+              'collections.abc', '__future__',
+          }
+          text = open(sys.argv[1]).read()
+          for m in re.finditer(r'^(?:import|from)\s+([\w.]+)', text, re.MULTILINE):
+              mod = m.group(1).split('.')[0]
+              full = m.group(1)
+              if mod not in allowed and full not in allowed:
+                  print(f'  {full}')
+          " "$script" 2>/dev/null)
+            if [ -n "$bad" ]; then
+              echo "EXTERNAL IMPORT in $script:"
+              echo "$bad"
+              status=1
+            fi
+          done
+          exit $status
+
+  # ── Full verification: manual trigger only ──────────────────────
+  # Runs every script end-to-end. Takes 30-60 minutes on CI runners.
+  full:
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        section: [01-foundations, 02-alignment, 03-systems, 04-agents]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            names.txt
+            *.json
+            *.txt
+          key: datasets-${{ matrix.section }}-${{ hashFiles(format('{0}/*.py', matrix.section)) }}
+          restore-keys: |
+            datasets-${{ matrix.section }}-
+
+      - name: Run scripts in ${{ matrix.section }}
+        run: |
+          # `timeout` is a Linux coreutil — intentionally Ubuntu-only.
+          for script in ${{ matrix.section }}/micro*.py; do
+            [ -f "$script" ] || continue
+            echo "==> $script"
+            timeout 900 python "$script"
+          done

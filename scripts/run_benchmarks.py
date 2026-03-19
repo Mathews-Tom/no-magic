@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SECTIONS = ["01-foundations", "02-alignment", "03-systems"]
+SECTIONS = ["01-foundations", "02-alignment", "03-systems", "04-agents"]
 STDERR_TAIL_LINES = 20
 
 

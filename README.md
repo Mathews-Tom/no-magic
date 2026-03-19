@@ -4,12 +4,13 @@
 
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square&logo=python&logoColor=white)
 ![License: MIT](https://img.shields.io/github/license/Mathews-Tom/no-magic?style=flat-square)
-![Algorithms](https://img.shields.io/badge/algorithms-44-orange?style=flat-square)
+![Algorithms](https://img.shields.io/badge/algorithms-47-orange?style=flat-square)
 ![Version](https://img.shields.io/badge/version-v2.0.0-blue?style=flat-square)
 ![Zero Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen?style=flat-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)
 ![GitHub stars](https://img.shields.io/github/stars/Mathews-Tom/no-magic?style=flat-square)
 ![Last Commit](https://img.shields.io/github/last-commit/Mathews-Tom/no-magic?style=flat-square)
+![CI](https://github.com/Mathews-Tom/no-magic/actions/workflows/verify.yml/badge.svg)
 
 ---
 
@@ -203,7 +204,7 @@ Every script in this repository is an **executable proof** that these algorithms
 </details>
 
 <details>
-<summary><h3>04 — Agents & Planning (2 scripts)</h3></summary>
+<summary><h3>04 — Agents & Planning (5 scripts)</h3></summary>
 <table>
 <tr>
 <td align="center"><a href="04-agents/micromcts.py"><b>Monte Carlo Tree Search</b></a><br/>
@@ -212,6 +213,17 @@ Every script in this repository is an **executable proof** that these algorithms
 <td align="center"><a href="04-agents/microreact.py"><b>ReAct Agent</b></a><br/>
 <img src="videos/previews/microreact.gif" width="280"/><br/>
 <sub>Thought → Action → Observation</sub></td>
+<td align="center"><a href="04-agents/microbandit.py"><b>Multi-Armed Bandits</b></a><br/>
+<img src="videos/previews/microbandit.gif" width="280"/><br/>
+<sub>ε-greedy vs UCB1 vs Thompson Sampling</sub></td>
+</tr>
+<tr>
+<td align="center"><a href="04-agents/microminimax.py"><b>Minimax + Alpha-Beta</b></a><br/>
+<img src="videos/previews/microminimax.gif" width="280"/><br/>
+<sub>Adversarial search with pruning</sub></td>
+<td align="center"><a href="04-agents/micromemory.py"><b>Memory-Augmented Network</b></a><br/>
+<img src="videos/previews/micromemory.gif" width="280"/><br/>
+<sub>Differentiable read/write heads</sub></td>
 <td></td>
 </tr>
 </table>
@@ -313,9 +325,9 @@ The engineering that makes models fast, small, and deployable. Attention variant
 
 See [`03-systems/README.md`](03-systems/README.md) for the full algorithm list, timing data, and roadmap.
 
-### 04 — Agents & Planning (2 scripts)
+### 04 — Agents & Planning (5 scripts)
 
-Autonomous reasoning and decision-making. Monte Carlo Tree Search for strategic planning and ReAct agents for tool-augmented reasoning loops.
+Autonomous reasoning and decision-making. Monte Carlo Tree Search for strategic planning, ReAct agents for tool-augmented reasoning loops, multi-armed bandits for exploration/exploitation, minimax with alpha-beta pruning for adversarial search, and memory-augmented networks for persistent agent memory.
 
 See [`04-agents/README.md`](04-agents/README.md) for the full algorithm list, timing data, and roadmap.
 
@@ -371,13 +383,13 @@ Each tier's README has the full algorithm list with measured run times for that 
 
 ### Challenges
 
-"Predict the behavior" exercises that test your understanding of the algorithms. 8 challenges covering attention, GPT, GAN, DPO, optimizer edge cases, discretization, complex SSMs, and roofline analysis. Each challenge presents a code snippet and asks you to reason about the output before running it.
+"Predict the behavior" exercises that test your understanding of the algorithms. 20 challenges covering all 4 tiers — attention, GPT, GAN, DPO, optimizers, discretization, complex SSMs, roofline, tokenizer, embedding, RNN, VAE, LoRA, PPO, MoE, KV-cache, quantization, SSM, MCTS, and ReAct. Each challenge presents a code snippet and asks you to reason about the output before running it.
 
 See [`challenges/README.md`](challenges/README.md) for the full challenge set.
 
 ### Flashcards
 
-Anki-compatible flashcard decks for spaced repetition review. 162 cards across 3 tiers (foundations, alignment, systems), covering key concepts, equations, and design decisions from every script.
+Anki-compatible flashcard decks for spaced repetition review. 182 cards across 4 tiers (foundations, alignment, systems, agents), covering key concepts, equations, and design decisions from every script.
 
 ```bash
 # Generate the Anki deck
@@ -388,13 +400,13 @@ See [`resources/flashcards/`](resources/flashcards/) for the raw card data and g
 
 ### Learning Path
 
-Structured tracks for different goals — 6 learning tracks ranging from weekend sprints to a full 20-hour curriculum. Each track orders scripts by conceptual dependency and includes time estimates, prerequisites, and milestone markers.
+Structured tracks for different goals — 7 learning tracks ranging from weekend sprints to a full curriculum. Each track orders scripts by conceptual dependency and includes time estimates, prerequisites, and milestone markers.
 
 See [`LEARNING_PATH.md`](LEARNING_PATH.md) for the full guide.
 
 ### Offline Book (EPUB)
 
-All 44 scripts compiled into a single EPUB with table of contents, thesis excerpts, tradeoff sections, and full annotated source. Readable on any e-reader, tablet, or phone.
+All 47 scripts compiled into a single EPUB with table of contents, thesis excerpts, tradeoff sections, and full annotated source. Readable on any e-reader, tablet, or phone.
 
 ```bash
 # Requires pandoc: brew install pandoc (macOS) or apt install pandoc
@@ -422,6 +434,7 @@ graph LR
   classDef foundations fill:#4a90d9,stroke:#2c5f8a,color:#fff
   classDef alignment fill:#e8834a,stroke:#b35f2e,color:#fff
   classDef systems fill:#5bb55b,stroke:#3a823a,color:#fff
+  classDef agents fill:#9b59b6,stroke:#7d3c98,color:#fff
 
   %% === 01-FOUNDATIONS ===
   subgraph F["01 — Foundations"]
@@ -449,6 +462,12 @@ graph LR
     PPO["PPO"]
     GRPO["GRPO"]
     MOE["MoE"]
+  end
+
+  %% === 04-AGENTS ===
+  subgraph AG["04 — Agents"]
+    MCTS["MCTS"]
+    REACT["ReAct"]
   end
 
   %% === 03-SYSTEMS ===
@@ -510,13 +529,23 @@ graph LR
   %% --- Cross-tier into QLoRA ---
   QUANT --> QLORA
 
+  %% --- Foundations / Alignment → Agents ---
+  REINF --> REACT
+  GPT --> REACT
+
   %% --- Apply styles ---
   class TOK,EMB,OPT,RNN,CONV,GPT,BERT,RAG,DIFF,VAE,GAN foundations
   class BN,DROP,LORA,QLORA,DPO,REINF,PPO,GRPO,MOE alignment
   class ATTN,FLASH,ROPE,KV,PAGED,QUANT,BEAM,CKPT,PAR,SSM,CSSM,DISC,ROOF systems
+  class MCTS,REACT agents
 ```
 
-**Legend:** <span style="color:#4a90d9">Foundations</span> · <span style="color:#e8834a">Alignment</span> · <span style="color:#5bb55b">Systems</span> — Solid arrows = strong prerequisite, dashed arrows = conceptual comparison.
+**Legend:** <span style="color:#4a90d9">Foundations</span> · <span style="color:#e8834a">Alignment</span> · <span style="color:#5bb55b">Systems</span> · <span style="color:#9b59b6">Agents</span> — Solid arrows = strong prerequisite, dashed arrows = conceptual comparison.
+
+## Related Projects
+
+- [micrograd](https://github.com/karpathy/micrograd) — Karpathy's autograd engine. The `Value` class in `microgpt.py` descends from this.
+- [makemore](https://github.com/karpathy/makemore) — Character-level language modeling. `micrornn.py` covers similar ground in a single comparative file.
 
 ## Inspiration & Attribution
 

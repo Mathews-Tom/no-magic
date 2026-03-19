@@ -20,6 +20,7 @@ A structured guide through all 44 no-magic implementations. Pick a track based o
 | 4. Deep Dive: Generative Models | How models create new data | ~4 hrs |
 | 5. Deep Dive: Retrieval & Search | Connecting models to external knowledge | ~3 hrs |
 | 6. Full Curriculum | All 44 scripts, dependency-ordered | ~22 hrs |
+| 7. Agent Algorithms | Search and reasoning in autonomous agents | ~3 hrs |
 
 ---
 
@@ -394,3 +395,36 @@ The SSM frontier — discretization methods, complex eigenvalue dynamics, and ha
 | 31 | `03-systems/microdiscretize.py` | 40 min | - [ ] |
 | 32 | `03-systems/microcomplexssm.py` | 40 min | - [ ] |
 | 33 | `03-systems/microroofline.py` | 40 min | - [ ] |
+
+### Milestone 14: Agent Algorithms (3 hrs)
+
+How agents search and reason — tree search for planning and tool-augmented reasoning for language agents.
+
+| # | Script | Time | Checkbox |
+|---|--------|------|----------|
+| 34 | `04-agents/micromcts.py` | 90 min | - [ ] |
+| 35 | `04-agents/microreact.py` | 90 min | - [ ] |
+
+---
+
+## Track 7: Agent Algorithms (~3 hrs)
+
+How autonomous agents find good decisions and reason step-by-step. This track covers tree search and tool-augmented reasoning — the two mechanisms that let agents plan beyond single forward passes.
+
+**Prerequisites:** Track 1 (transformer architecture and autograd `Value` class) and Track 2 — specifically `02-alignment/microreinforce.py` (REINFORCE policy gradient, which `microreact.py` uses directly for policy training).
+
+### Steps
+
+**1. `04-agents/micromcts.py`**
+- **You'll learn:** How Monte Carlo Tree Search finds strong moves in combinatorial games without exhaustive enumeration, using the UCB1 formula to balance exploring new branches against exploiting known-good ones.
+- **Builds on:** `microreinforce` (the REINFORCE policy gradient is used to train the rollout policy).
+- **Key moment:** The UCB1 term in action — early in search, barely-visited nodes have huge exploration bonuses and get selected first; as visit counts grow, the exploitation term dominates and the search concentrates on the best subtree.
+- **Time:** 90 min
+- [ ] Completed
+
+**2. `04-agents/microreact.py`**
+- **You'll learn:** How the Thought→Action→Observation loop interleaves language model reasoning with tool calls, grounding each reasoning step in actual observations rather than generating all reasoning upfront.
+- **Builds on:** `microreinforce` (REINFORCE is used to train the agent's action policy), `microgpt` (the language model backbone).
+- **Key moment:** The action masking step — the agent's output distribution is zeroed out over illegal or contextually irrelevant actions before sampling, preventing the policy from exploring nonsensical branches and dramatically stabilizing training.
+- **Time:** 90 min
+- [ ] Completed
