@@ -63,6 +63,9 @@ SCENE_MAP = {
     "scene_microcomplexssm.py": "ComplexSSMScene",
     "scene_microdiscretize.py": "DiscretizeScene",
     "scene_microroofline.py": "RooflineScene",
+    "scene_microbandit.py": "BanditScene",
+    "scene_microminimax.py": "MinimaxScene",
+    "scene_micromemory.py": "MemoryScene",
 }
 
 QUALITY_MAP = {
